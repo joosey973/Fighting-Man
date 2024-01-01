@@ -1,6 +1,6 @@
-import pygame
-
 from image_loader import load_image
+
+import pygame
 
 
 class Hero(pygame.sprite.Sprite):
