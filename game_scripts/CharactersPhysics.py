@@ -4,8 +4,9 @@ import pygame
 
 
 class Hero(pygame.sprite.Sprite):
-    def __init__(self, *sprite):
-        super().__init__(*sprite)
+    def __init__(self, screen, sprite):
+        super().__init__(sprite)
+        self.screen = screen
         self.index_of_hero_static_img = 0
         self.index_0 = 0
         self.index_of_hero_running_img = 0
@@ -41,15 +42,14 @@ class Hero(pygame.sprite.Sprite):
             self.index_of_hero_static_img = 0
         self.index_0 += 1
 
-    def update(self, key):
-        if key[pygame.K_d]:
+    def do_rotate(self, key):
+        if key[pygame.K_d] and self.dx + self.rect.right < self.screen.get_width():
             self.do_the_running_animation()
             self.rect.right += self.dx
-        elif key[pygame.K_a]:
-            self.do_the_running_animation(is_reversed=True)  # Параметр is_reversed отвечает за смену
-            # направления положения персонажа
+        elif key[pygame.K_a] and self.rect.left - self.dx > 0:
+            self.do_the_running_animation(is_reversed=True)
             self.rect.left -= self.dx
-        elif key[pygame.K_w]:
+        elif key[pygame.K_w] and self.rect.top - self.dy > 0:
             self.do_the_running_animation()
             self.rect.top -= self.dy
         else:
@@ -57,3 +57,6 @@ class Hero(pygame.sprite.Sprite):
                 self.do_the_static_animation(is_reversed=True)
             else:
                 self.do_the_static_animation()
+
+    def update(self, key):
+        self.do_rotate(key)

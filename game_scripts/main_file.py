@@ -13,7 +13,10 @@ class Game:
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.fps = pygame.time.Clock()
         self.hero_sprite = pygame.sprite.Group()
-        Hero(self.hero_sprite)
+        self.activate_sprites()
+
+    def activate_sprites(self):
+        Hero(self.screen, self.hero_sprite)
 
     def run(self):
         is_running = True
@@ -32,4 +35,5 @@ class Game:
             pygame.display.update()
 
 
-Game().run()
+if __name__ == "__main__":
+    Game().run()
