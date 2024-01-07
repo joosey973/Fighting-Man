@@ -2,6 +2,8 @@ import sys
 
 from CharactersPhysics import Hero
 
+from collide_system import Boarders
+
 from image_loader import load_image
 
 import pygame
@@ -13,10 +15,17 @@ class Game:
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.fps = pygame.time.Clock()
         self.hero_sprite = pygame.sprite.Group()
+        self.vertical_borders = pygame.sprite.Group()
+        self.horizontal_borders = pygame.sprite.Group()
+        self.all_sprites = pygame.sprite.Group()
         self.activate_sprites()
 
     def activate_sprites(self):
-        Hero(self.screen, self.hero_sprite)
+        Hero(self.screen, self.hero_sprite, self.all_sprites)
+        Boarders(5, 5, self.screen.get_width() - 5, 5)
+        Boarders(5, self.screen.get_height() - 5, self.screen.get_width() - 5, self.screen.get_height() - 5)
+        Boarders(5, 5, 5, self.screen.get_height() - 5)
+        Boarders(self.screen.get_width() - 5, 5, self.screen.get_width() - 5, self.screen.get_height() - 5)
 
     def run(self):
         is_running = True

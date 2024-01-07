@@ -4,8 +4,8 @@ import pygame
 
 
 class Hero(pygame.sprite.Sprite):
-    def __init__(self, screen, sprite):
-        super().__init__(sprite)
+    def __init__(self, screen, sprite, all_sprites):
+        super().__init__(sprite, all_sprites)
         self.screen = screen
         self.index_of_hero_static_img = 0
         self.index_0 = 0
