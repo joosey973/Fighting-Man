@@ -1,3 +1,4 @@
+import random
 import sys
 
 from CharactersPhysics import Hero
@@ -5,6 +6,8 @@ from CharactersPhysics import Hero
 from collide_system import Boarders
 
 from image_loader import load_image
+
+from particles_movement import Particles
 
 import pygame
 
@@ -18,6 +21,8 @@ class Game:
         self.vertical_borders = pygame.sprite.Group()
         self.horizontal_borders = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
+        self.particles = pygame.sprite.Group()
+        self.particles_var = ["leaf", "particle"]
         self.activate_sprites()
 
     def activate_sprites(self):
@@ -29,6 +34,8 @@ class Game:
                  self.horizontal_borders, self.all_sprites)
         Boarders(self.screen.get_width() - 5, 5, self.screen.get_width() - 5, self.screen.get_height() - 5,
                  self.vertical_borders, self.horizontal_borders, self.all_sprites)
+        [Particles(self.screen, self.particles_var[random.randrange(2)], self.particles) for _ in range(50)]
+        Hero(self.hero_sprite)
 
     def run(self):
         is_running = True
@@ -43,6 +50,8 @@ class Game:
                 key = pygame.key.get_pressed()
             self.hero_sprite.update(key)
             self.hero_sprite.draw(self.screen)
+            self.particles.update()
+            self.particles.draw(self.screen)
             self.fps.tick(100)
             pygame.display.update()
 
