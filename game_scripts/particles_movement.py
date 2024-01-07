@@ -6,10 +6,12 @@ import pygame
 
 
 class Particles(pygame.sprite.Sprite):
-    def __init__(self, screen, particle, particles_sprite):
+    def __init__(self, screen, particle, particles_sprite, horizontal_borders, all_sprites):
         super().__init__(particles_sprite)
         self.screen = screen
         self.particle = particle
+        self.all_sprites = all_sprites
+        self.horizontal_borders = horizontal_borders
         self.ind_of_particle = 0
         self.index = 0
         self.image = pygame.transform.scale(load_image(f"images/particles/{self.particle}/{self.ind_of_particle}.png",
@@ -19,6 +21,8 @@ class Particles(pygame.sprite.Sprite):
         self.rect.y = random.randrange(self.rect.height, self.screen.get_height() - self.rect.height + 1)
 
     def update(self):
+        if pygame.sprite.spritecollideany(self, self.all_sprites):
+            self.kill()
         self.image = pygame.transform.scale(load_image(f"images/particles/{self.particle}/{self.ind_of_particle}.png",
                                                        -1), (20, 20))
         if self.index == 20:
