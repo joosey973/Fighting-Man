@@ -22,10 +22,13 @@ class Game:
 
     def activate_sprites(self):
         Hero(self.screen, self.hero_sprite, self.all_sprites)
-        Boarders(5, 5, self.screen.get_width() - 5, 5)
-        Boarders(5, self.screen.get_height() - 5, self.screen.get_width() - 5, self.screen.get_height() - 5)
-        Boarders(5, 5, 5, self.screen.get_height() - 5)
-        Boarders(self.screen.get_width() - 5, 5, self.screen.get_width() - 5, self.screen.get_height() - 5)
+        Boarders(5, 5, self.screen.get_width() - 5, 5, self.vertical_borders, self.horizontal_borders, self.all_sprites)
+        Boarders(5, self.screen.get_height() - 5, self.screen.get_width() - 5, self.screen.get_height() - 5,
+                 self.vertical_borders, self.horizontal_borders, self.all_sprites)
+        Boarders(5, 5, 5, self.screen.get_height() - 5, self.vertical_borders,
+                 self.horizontal_borders, self.all_sprites)
+        Boarders(self.screen.get_width() - 5, 5, self.screen.get_width() - 5, self.screen.get_height() - 5,
+                 self.vertical_borders, self.horizontal_borders, self.all_sprites)
 
     def run(self):
         is_running = True
