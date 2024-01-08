@@ -47,7 +47,7 @@ class Game:
         [Clouds(self.screen, random.randrange(1, 3), self.clouds_sprites, self.vertical_borders)
          for _ in range(self.start_len_of_clouds)]
 
-    def sprites_update(self, key=None):
+    def update_sprites(self, key):
         self.clouds_sprites.update()
         self.clouds_sprites.draw(self.screen)
 
@@ -71,7 +71,7 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 key = pygame.key.get_pressed()
-            self.sprites_update(key)
+            self.update_sprites(key)
             self.fps.tick(25)
             pygame.display.update()
 
