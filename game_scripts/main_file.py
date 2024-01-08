@@ -71,7 +71,7 @@ class Game:
             self.hero_sprite.update(key)
             self.hero_sprite.draw(self.screen)
 
-            self.fps.tick(25)
+            self.fps.tick(20)
             pygame.display.update()
 
 

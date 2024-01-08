@@ -19,8 +19,8 @@ class Hero(pygame.sprite.Sprite):
         self.jump_mode = 2  # 0 - в прыжке, 1 - падает, 2 - не прыгает
         self.jump_counter = 0  # счетчик подъема/спуска
         self.is_jump = False
-        self.dx = 3
-        self.dy = 3
+        self.dx = 5
+        self.dy = 5
 
     def do_the_running_animation(self, is_reversed=False):
         self.is_left = is_reversed
@@ -28,7 +28,7 @@ class Hero(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(load_image(f"images/entities/player/run/"
                                             f"{self.index_of_hero_running_img}.png", -1, is_reversed),
                                             (self.hero_sizes[0] * 3.5, self.hero_sizes[1] * 3.5))
-        if self.index_1 == 5:
+        if self.index_1 == 2:
             self.index_of_hero_running_img += 1
             self.index_1 = 0
         if self.index_of_hero_running_img == 7:
@@ -40,7 +40,7 @@ class Hero(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(load_image(f"images/entities/player/idle/"
                                             f"{self.index_of_hero_static_img}.png", -1, is_reversed),
                                             (self.hero_sizes[0] * 3.5, self.hero_sizes[1] * 3.5))
-        if self.index_0 == 5:
+        if self.index_0 == 2:
             self.index_of_hero_static_img += 1
             self.index_0 = 0
         if self.index_of_hero_static_img == 21:
@@ -55,11 +55,11 @@ class Hero(pygame.sprite.Sprite):
                                             (self.hero_sizes[0] * 3.5, self.hero_sizes[1] * 3.5))
 
     def do_jump(self):
-        if self.jump_mode == 0 and self.jump_counter < 60:
+        if self.jump_mode == 0 and self.jump_counter < 50:
             self.do_the_jumping_animation()
             self.jump_counter += self.dy
             self.rect.top -= self.dy
-        if self.jump_counter == 60:
+        if self.jump_counter == 50:
             self.jump_mode = 1
         if self.jump_mode == 1 and self.jump_counter > 0:
             self.do_the_jumping_animation()
