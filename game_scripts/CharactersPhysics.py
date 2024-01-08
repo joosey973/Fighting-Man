@@ -19,8 +19,8 @@ class Hero(pygame.sprite.Sprite):
         self.jump_mode = 2  # 0 - в прыжке, 1 - падает, 2 - не прыгает
         self.jump_counter = 0  # счетчик подъема/спуска
         self.is_jump = False
-        self.dx = 1
-        self.dy = 1
+        self.dx = 3
+        self.dy = 3
 
     def do_the_running_animation(self, is_reversed=False):
         self.is_left = is_reversed
@@ -28,7 +28,7 @@ class Hero(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(load_image(f"images/entities/player/run/"
                                             f"{self.index_of_hero_running_img}.png", -1, is_reversed),
                                             (self.hero_sizes[0] * 3.5, self.hero_sizes[1] * 3.5))
-        if self.index_1 == 20:
+        if self.index_1 == 5:
             self.index_of_hero_running_img += 1
             self.index_1 = 0
         if self.index_of_hero_running_img == 7:
@@ -40,37 +40,39 @@ class Hero(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(load_image(f"images/entities/player/idle/"
                                             f"{self.index_of_hero_static_img}.png", -1, is_reversed),
                                             (self.hero_sizes[0] * 3.5, self.hero_sizes[1] * 3.5))
-        if self.index_0 == 20:
+        if self.index_0 == 5:
             self.index_of_hero_static_img += 1
             self.index_0 = 0
         if self.index_of_hero_static_img == 21:
             self.index_of_hero_static_img = 0
         self.index_0 += 1
 
-    def do_the_jumping_animation(self, is_reversed=False):
-        self.is_left = is_reversed
+    def do_the_jumping_animation(self):
+        is_reversed = self.is_left
         self.index_0, self.index_of_hero_static_img, \
             self.index_1, self.index_of_hero_running_img = (0 for _ in range(4))
         self.image = pygame.transform.scale(load_image("images/entities/player/jump/0.png", -1, is_reversed),
                                             (self.hero_sizes[0] * 3.5, self.hero_sizes[1] * 3.5))
 
     def do_jump(self):
-        if self.jump_mode == 0 and self.jump_counter <= 50:
-            self.do_the_jumping_animation(self.is_left)
-            self.rect.top -= self.dy
+        if self.jump_mode == 0 and self.jump_counter < 60:
+            self.do_the_jumping_animation()
             self.jump_counter += self.dy
-        if self.jump_counter == 50:
+            self.rect.top -= self.dy
+        if self.jump_counter == 60:
             self.jump_mode = 1
-        if self.jump_mode == 1 and self.jump_counter >= 0:
-            self.do_the_jumping_animation(self.is_left)
-            self.rect.bottom += self.dy
+        if self.jump_mode == 1 and self.jump_counter > 0:
+            self.do_the_jumping_animation()
             self.jump_counter -= self.dy
+            self.rect.bottom += self.dy
         if self.jump_counter == 0:
-            self.jump_mode = 2
             self.is_jump = False
+            self.jump_counter = 0
+            self.jump_mode = 2
 
     def do_rotate(self, key):
-        if key[pygame.K_w] and self.rect.top - self.dy > 0 and not self.is_jump:
+        if (key[pygame.K_w] and self.rect.top - self.dy > 0 and not self.is_jump
+                or key[pygame.K_SPACE] and self.rect.top - self.dy > 0 and not self.is_jump):
             self.jump_mode = 0
             self.is_jump = True
         elif key[pygame.K_a] and self.rect.left - self.dx > 0:
