@@ -16,8 +16,9 @@ class Hero(pygame.sprite.Sprite):
         self.jump_mode = 2  # 0 - в прыжке, 1 - падает, 2 - не прыгает
         self.is_left = False
         self.is_jump = False
-        self.dx = 5
-        self.dy = 5
+        self.is_slide = False
+        self.dx, self.dy = 5, 5
+        self.slide_limit = 0  # лимит будет в 5 пикселей
         self.image = pygame.transform.scale(load_image("images/entities/player/idle/0.png", -1),
                                             (self.hero_sizes[0] * 3, self.hero_sizes[1] * 3))
         self.rect = self.image.get_rect()
@@ -45,13 +46,20 @@ class Hero(pygame.sprite.Sprite):
             self.is_jump = True
             self.jump_mode = 0
         elif (key[pygame.K_s] and self.rect.top - self.dy > 0 and not self.is_jump or
-                key[pygame.K_LCTRL] and self.rect.top - self.dy < self.screen.get_height()) and not self.is_jump:
+                key[pygame.K_LCTRL] and self.rect.top - self.dy < self.screen.get_height()):
             self.image = entities_animations("images/entities/player/slide/{}.png", "slide", 1, (14, 18), 3,
                                              self.is_left)
-            if self.is_left:
+            if self.is_left and self.slide_limit > -100:
+                self.is_slide = True
                 self.rect.left -= self.dx * 2
-            else:
+                self.slide_limit -= self.dx * 2
+            elif not self.is_left and self.slide_limit < 100:
+                self.is_slide = True
                 self.rect.right += self.dx * 2
+                self.slide_limit += self.dx * 2
+        elif self.is_slide and (self.slide_limit == 100 or self.slide_limit == -100):
+            self.slide_limit = 0
+            self.is_slide = False
         elif key[pygame.K_a] and self.rect.left - self.dx > 0:
             self.is_left = True
             self.image = entities_animations("images/entities/player/run/{}.png", "run", 7, (14, 18), 3, self.is_left)

@@ -11,8 +11,7 @@ class Particles(pygame.sprite.Sprite):
         self.screen = screen
         self.particle = particle
         self.all_sprites = all_sprites
-        self.ind_of_particle = 0
-        self.index = 0
+        self.ind_of_particle, self.index = 0, 0
         self.image = pygame.transform.scale(load_image(f"images/particles/{self.particle}/{self.ind_of_particle}.png",
                                                        -1), (16, 16))
         self.rect = self.image.get_rect()
