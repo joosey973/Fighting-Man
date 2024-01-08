@@ -6,12 +6,11 @@ import pygame
 
 
 class Particles(pygame.sprite.Sprite):
-    def __init__(self, screen, particle, particles_sprite, horizontal_borders, all_sprites):
+    def __init__(self, screen, particle, particles_sprite, all_sprites):
         super().__init__(particles_sprite)
         self.screen = screen
         self.particle = particle
         self.all_sprites = all_sprites
-        self.horizontal_borders = horizontal_borders
         self.ind_of_particle = 0
         self.index = 0
         self.image = pygame.transform.scale(load_image(f"images/particles/{self.particle}/{self.ind_of_particle}.png",
@@ -31,9 +30,6 @@ class Particles(pygame.sprite.Sprite):
         if self.particle == "leaf" and self.ind_of_particle == 17:
             self.ind_of_particle = 0
             self.index = 0
-        elif self.particle == "particle" and self.ind_of_particle == 3:
-            self.ind_of_particle = 0
-            self.index = 0
         self.index += 1
         self.rect = self.rect.move(0, 1)
 
@@ -41,10 +37,10 @@ class Particles(pygame.sprite.Sprite):
 class Clouds(pygame.sprite.Sprite):
     clouds_list = []
 
-    def __init__(self, screen, ind_of_cloud, clouds_sprites, vertical_borders):
+    def __init__(self, screen, ind_of_cloud, clouds_sprites, all_sprites):
         super().__init__(clouds_sprites)
         self.screen = screen
-        self.vertical_borders = vertical_borders
+        self.all_sprites = all_sprites
         self.image = load_image(f"images/clouds/cloud_{ind_of_cloud}.png", -1)
         self.rect = self.image.get_rect()
         self.rect.width *= 3
@@ -64,6 +60,6 @@ class Clouds(pygame.sprite.Sprite):
             self.rect.y = random.randrange(self.rect.height // 3, self.screen.get_height() - self.rect.height + 1)
 
     def update(self):
-        if pygame.sprite.spritecollideany(self, self.vertical_borders):
+        if pygame.sprite.spritecollideany(self, self.all_sprites):
             self.rect.x = self.rect.width // 8
         self.rect = self.rect.move(1, 0)
