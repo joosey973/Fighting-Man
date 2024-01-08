@@ -23,7 +23,7 @@ class Particles(pygame.sprite.Sprite):
             self.kill()
         self.image = pygame.transform.scale(load_image(f"images/particles/{self.particle}/{self.ind_of_particle}.png",
                                                        -1), (16, 16))
-        if self.index == 1:
+        if self.index == 3:
             self.ind_of_particle += 1
             self.index = 0
         if self.particle == "leaf" and self.ind_of_particle == 17:
