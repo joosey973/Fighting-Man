@@ -15,7 +15,7 @@ class Particles(pygame.sprite.Sprite):
         self.ind_of_particle = 0
         self.index = 0
         self.image = pygame.transform.scale(load_image(f"images/particles/{self.particle}/{self.ind_of_particle}.png",
-                                                       -1), (20, 20))
+                                                       -1), (16, 16))
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(self.rect.width, self.screen.get_width() - self.rect.width + 1)
         self.rect.y = random.randrange(self.rect.height, self.screen.get_height() - self.rect.height + 1)
@@ -24,7 +24,7 @@ class Particles(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, self.all_sprites):
             self.kill()
         self.image = pygame.transform.scale(load_image(f"images/particles/{self.particle}/{self.ind_of_particle}.png",
-                                                       -1), (20, 20))
+                                                       -1), (16, 16))
         if self.index == 20:
             self.ind_of_particle += 1
             self.index = 0
