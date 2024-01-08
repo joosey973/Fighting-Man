@@ -16,7 +16,7 @@ def entities_animations(path, type_of_ev, count_of_files, size, mul_num, is_reve
         index, index_of_hero_pos = 0, 0
     image = pygame.transform.scale(load_image(path.format(index_of_hero_pos), -1, is_reversed),
                                    (size[0] * mul_num, size[1] * mul_num))
-    if index == 5:
+    if index == 3:
         index_of_hero_pos += 1
         index = 0
     if index_of_hero_pos == count_of_files:
