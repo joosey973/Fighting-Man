@@ -1,4 +1,3 @@
-import random
 import sys
 
 from CharactersPhysics import Hero
@@ -17,7 +16,7 @@ import pygame
 class Game:
     def __init__(self):
         self.width, self.height = 1000, 1000
-        self.start_len_of_particles = 80
+        self.start_len_of_particles = 50
         self.start_len_of_clouds = (self.width * self.height // 100000) + 5
         self.create_groups()
         self.screen = pygame.display.set_mode((self.width, self.height))
@@ -41,8 +40,8 @@ class Game:
                  self.horizontal_borders, self.all_sprites)
         Boarders(self.screen.get_width() - 5, 5, self.screen.get_width() - 5, self.screen.get_height() - 5,
                  self.vertical_borders, self.horizontal_borders, self.all_sprites)
-        [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.all_sprites)
-         for _ in range(self.start_len_of_particles)]
+        [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
+                   self.all_sprites) for _ in range(self.start_len_of_particles)]
         [Clouds(self.screen, self.clouds_sprites, self.all_sprites) for _ in range(self.start_len_of_clouds)]
 
     def update_sprites(self):
@@ -62,8 +61,8 @@ class Game:
         while is_running:
             self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
                                                     (self.width, self.height)), (0, 0))
-            [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.all_sprites)
-             for _ in range(self.start_len_of_particles - len(self.particles))]
+            [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
+                       self.all_sprites) for _ in range(self.start_len_of_particles - len(self.particles))]
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()

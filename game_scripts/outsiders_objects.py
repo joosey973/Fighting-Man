@@ -1,16 +1,19 @@
 import random
 
+from animations import particles_animation
+
 from image_loader import load_image
 
 import pygame
 
 
 class Particles(pygame.sprite.Sprite):
-    def __init__(self, screen, particle, particles_sprite, horizontal_borders, all_sprites):
+    def __init__(self, screen, particle, particles_sprite, horizontal_borders, vertical_borders, all_sprites):
         super().__init__(particles_sprite, all_sprites)
         self.screen = screen
         self.particle = particle
         self.horizontal_borders = horizontal_borders
+        self.vertical_borders = vertical_borders
         self.ind_of_particle, self.index = 0, 0
         self.image = pygame.transform.scale(load_image(f"images/particles/{self.particle}/{self.ind_of_particle}.png",
                                                        -1), (16, 16))
@@ -19,17 +22,11 @@ class Particles(pygame.sprite.Sprite):
         self.rect.y = random.randrange(self.rect.height, self.screen.get_height() - self.rect.height + 1)
 
     def update(self):
+        if pygame.sprite.spritecollideany(self, self.vertical_borders):
+            self.kill()
         if pygame.sprite.spritecollideany(self, self.horizontal_borders):
             self.kill()
-        self.image = pygame.transform.scale(load_image(f"images/particles/{self.particle}/{self.ind_of_particle}.png",
-                                                       -1), (16, 16))
-        if self.index == 3:
-            self.ind_of_particle += 1
-            self.index = 0
-        if self.particle == "leaf" and self.ind_of_particle == 17:
-            self.ind_of_particle = 0
-            self.index = 0
-        self.index += 1
+        self.image = particles_animation("images/particles/leaf/{}.png", "leaf", 17, (8, 8), 2)
         self.rect = self.rect.move(0, 1)
 
 
