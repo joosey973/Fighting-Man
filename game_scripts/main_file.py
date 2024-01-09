@@ -3,6 +3,8 @@ import sys
 
 from CharactersPhysics import Hero
 
+from animations import Camera
+
 from collide_system import Boarders
 
 from image_loader import load_image
@@ -15,7 +17,7 @@ import pygame
 class Game:
     def __init__(self):
         self.width, self.height = 1000, 1000
-        self.start_len_of_particles = 150
+        self.start_len_of_particles = 80
         self.start_len_of_clouds = (self.width * self.height // 100000) + 5
         self.create_groups()
         self.screen = pygame.display.set_mode((self.width, self.height))
@@ -39,38 +41,38 @@ class Game:
                  self.horizontal_borders, self.all_sprites)
         Boarders(self.screen.get_width() - 5, 5, self.screen.get_width() - 5, self.screen.get_height() - 5,
                  self.vertical_borders, self.horizontal_borders, self.all_sprites)
-        [Particles(self.screen, "leaf", self.particles, self.all_sprites)
+        [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.all_sprites)
          for _ in range(self.start_len_of_particles)]
-        Hero(self.screen, self.hero_sprite)
-        [Clouds(self.screen, random.randrange(1, 3), self.clouds_sprites, self.all_sprites)
-         for _ in range(self.start_len_of_clouds)]
+        [Clouds(self.screen, self.clouds_sprites, self.all_sprites) for _ in range(self.start_len_of_clouds)]
 
-    def update_sprites(self, key):
-        self.clouds_sprites.update()
+    def update_sprites(self):
+        self.clouds_sprites.update()  # Апдейт облаков
         self.clouds_sprites.draw(self.screen)
 
-        self.particles.update()
+        self.particles.update()  # Апдейт листьев
         self.particles.draw(self.screen)
 
-        self.hero_sprite.update(key)
+        self.hero_sprite.update()  # Апдейт главного героя
         self.hero_sprite.draw(self.screen)
 
     def run(self):
         is_running = True
-        key = pygame.key.get_pressed()
+        hero = Hero(self.screen, self.hero_sprite, self.all_sprites)
+        camera = Camera(self.screen)
         while is_running:
-            for _ in range((self.start_len_of_particles - len(self.particles)) * 2):
-                Particles(self.screen, "leaf",
-                          self.particles, self.all_sprites)
             self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
                                                     (self.width, self.height)), (0, 0))
+            [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.all_sprites)
+             for _ in range(self.start_len_of_particles - len(self.particles))]
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                key = pygame.key.get_pressed()
             self.fps.tick(20)
-            self.update_sprites(key)
+            camera.update(hero)
+            for sprite in self.all_sprites:
+                camera.apply(sprite)
+            self.update_sprites()
             pygame.display.update()
 
 

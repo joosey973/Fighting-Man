@@ -6,8 +6,8 @@ import pygame
 
 
 class Hero(pygame.sprite.Sprite):
-    def __init__(self, screen, sprite):
-        super().__init__(sprite)
+    def __init__(self, screen, sprite, all_sprites):
+        super().__init__(sprite, all_sprites)
         self.index_of_hero_pos, self.index = 0, 0
         self.screen = screen
         self.hero_sizes = (14, 18)
@@ -73,5 +73,6 @@ class Hero(pygame.sprite.Sprite):
                                              self.is_left)
         self.do_jump()
 
-    def update(self, key):
+    def update(self):
+        key = pygame.key.get_pressed()
         self.do_rotate(key)
