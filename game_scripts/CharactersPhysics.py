@@ -41,8 +41,10 @@ class Hero(pygame.sprite.Sprite):
             self.jump_mode = 2
 
     def do_rotate(self, key):
+
         if (key[pygame.K_w] and self.rect.top - self.dy > 0 and not self.is_jump or
                 key[pygame.K_SPACE] and self.rect.top - self.dy > 0) and not self.is_jump:
+            self.is_slide = False
             self.is_jump = True
             self.jump_mode = 0
         elif (key[pygame.K_s] and self.rect.top - self.dy > 0 and not self.is_jump or
@@ -61,16 +63,21 @@ class Hero(pygame.sprite.Sprite):
             self.slide_limit = 0
             self.is_slide = False
         elif key[pygame.K_a] and self.rect.left - self.dx > 0:
+            self.is_slide = False
             self.is_left = True
             self.image = entities_animations("images/entities/player/run/{}.png", "run", 7, (14, 18), 3, self.is_left)
             self.rect.left -= self.dx
         elif key[pygame.K_d] and self.rect.right + self.dx < self.screen.get_width():
+            self.is_slide = False
             self.is_left = False
             self.image = entities_animations("images/entities/player/run/{}.png", "run", 7, (14, 18), 3, self.is_left)
             self.rect.right += self.dx
         else:
+            self.is_slide = False
             self.image = entities_animations("images/entities/player/idle/{}.png", "idle", 21, (14, 18), 3,
                                              self.is_left)
+        if not self.is_slide:
+            self.slide_limit = 0
         self.do_jump()
 
     def update(self):
