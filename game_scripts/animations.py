@@ -29,7 +29,7 @@ def particles_animation(path, type_of_ev, count_of_files, size, mul_num):
     global index_particles, index_of_particles_pos, type_of_move_particle
     image = pygame.transform.scale(load_image(path.format(index_of_particles_pos), -1),
                                    (size[0] * mul_num, size[1] * mul_num))
-    if index_particles == 500:
+    if index_particles == 400:
         index_of_particles_pos += 1
         index_particles = 0
     if index_of_particles_pos == count_of_files:

@@ -20,6 +20,8 @@ class Particles(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(self.rect.width, self.screen.get_width() - self.rect.width + 1)
         self.rect.y = random.randrange(self.rect.height, self.screen.get_height() - self.rect.height + 1)
+        self.count = 0
+        self.offset_x = [-1, 1][random.randrange(2)]
 
     def update(self):
         if pygame.sprite.spritecollideany(self, self.vertical_borders):
@@ -27,7 +29,11 @@ class Particles(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, self.horizontal_borders):
             self.kill()
         self.image = particles_animation("images/particles/leaf/{}.png", "leaf", 17, (8, 8), 2)
-        self.rect = self.rect.move(0, 1)
+        self.rect = self.rect.move(self.offset_x, 1)
+        if self.count == 50:
+            self.count = 0
+            self.offset_x = -self.offset_x
+        self.count += 1
 
 
 class Clouds(pygame.sprite.Sprite):

@@ -48,7 +48,7 @@ class Hero(pygame.sprite.Sprite):
             self.is_jump = True
             self.jump_mode = 0
         elif (key[pygame.K_s] and self.rect.top - self.dy > 0 and not self.is_jump or
-                key[pygame.K_LCTRL] and self.rect.top - self.dy < self.screen.get_height()):
+                key[pygame.K_LCTRL] and self.rect.top - self.dy < self.screen.get_height()) and not self.is_jump:
             self.image = entities_animations("images/entities/player/slide/{}.png", "slide", 1, (14, 18), 3,
                                              self.is_left)
             if self.is_left and self.slide_limit > -100:
