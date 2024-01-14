@@ -51,15 +51,15 @@ class Hero(pygame.sprite.Sprite):
                 key[pygame.K_LCTRL] and self.rect.top - self.dy < self.screen.get_height()):
             self.image = entities_animations("images/entities/player/slide/{}.png", "slide", 1, (14, 18), 3,
                                              self.is_left)
-            if self.is_left and self.slide_limit > -250:
+            if self.is_left and self.slide_limit > -240:
                 self.is_slide = True
                 self.rect.left -= self.dx * 4
                 self.slide_limit -= self.dx * 4
-            elif not self.is_left and self.slide_limit < 250:
+            elif not self.is_left and self.slide_limit < 240:
                 self.is_slide = True
                 self.rect.right += self.dx * 4
                 self.slide_limit += self.dx * 4
-        elif self.is_slide and (self.slide_limit == 250 or self.slide_limit == -250):
+        elif self.is_slide and (self.slide_limit == 240 or self.slide_limit == -240):
             self.slide_limit = 0
             self.is_slide = False
         elif key[pygame.K_a] and self.rect.left - self.dx > 0:
