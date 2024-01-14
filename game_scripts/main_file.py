@@ -10,6 +10,8 @@ from image_loader import load_image
 
 from outsiders_objects import Clouds, Particles
 
+from level import Block
+
 import pygame
 
 
@@ -30,6 +32,7 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
         self.particles = pygame.sprite.Group()
         self.clouds_sprites = pygame.sprite.Group()
+        self.blocks = pygame.sprite.Group()
 
     def activate_sprites(self):
         Boarders(5, 5, self.screen.get_width() - 5, 5, self.vertical_borders, self.horizontal_borders,
@@ -43,6 +46,7 @@ class Game:
         [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
                    self.all_sprites) for _ in range(self.start_len_of_particles)]
         [Clouds(self.screen, self.clouds_sprites, self.all_sprites) for _ in range(self.start_len_of_clouds)]
+        Block(self.screen, self.blocks, self.all_sprites)
 
     def update_sprites(self):
         self.clouds_sprites.update()  # Апдейт облаков
@@ -53,6 +57,8 @@ class Game:
 
         self.hero_sprite.update()  # Апдейт главного героя
         self.hero_sprite.draw(self.screen)
+
+        self.blocks.draw(self.screen)
 
     def run(self):
         is_running = True
