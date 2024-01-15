@@ -16,10 +16,10 @@ class Block(pygame.sprite.Sprite):
         super().__init__(sprite, all_sprites)
         self.screen = screen
         self.size_block = [16, 16]
-        self.block = pygame.transform.scale(load_image('images/tiles/grass/0.png'), (self.size_block[0] * 2, self.size_block[1] * 2))
-        self.block_rect = self.block.get_rect()
-        self.block_rect.x, self.block_rect.y = self.screen.get_width() // 2 + 100, self.screen.get_height() // 2 + 25
+        self.image = pygame.transform.scale(load_image('images/tiles/grass/0.png'), (self.size_block[0] * 2, self.size_block[1] * 2))
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = self.screen.get_width() // 2 + 100, self.screen.get_height() // 2 + 25
 
     # def platfoms(self):
     #     hero = Hero(self.screen, self.hero_sprite, self.all_sprites)
-    #     if self.block_rect.collidepoint():
+    #     if self.rect.collidepoint():
