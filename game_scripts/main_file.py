@@ -15,7 +15,7 @@ import pygame
 
 class Game:
     def __init__(self):
-        self.width, self.height = 1000, 1000
+        self.width, self.height = 1920, 1080
         self.start_len_of_particles = 25
         self.start_len_of_clouds = (self.width * self.height // 100000) + 5
         self.create_groups()
@@ -55,6 +55,7 @@ class Game:
         self.hero_sprite.draw(self.screen)
 
     def run(self):
+        self.istrue = True
         is_running = True
         hero = Hero(self.screen, self.hero_sprite, self.all_sprites)
         camera = Camera(self.screen)

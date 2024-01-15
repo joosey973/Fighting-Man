@@ -7,6 +7,7 @@ index, index_of_hero_pos = 0, 0
 type_of_move = None
 index_particles, index_of_particles_pos = 0, 0
 type_of_move_particle = None
+index_of_exp, index_of_exp_pos = 0, 0
 
 
 def entities_animations(path, type_of_ev, count_of_files, size, mul_num, is_reversed=False):
@@ -36,6 +37,18 @@ def particles_animation(path, type_of_ev, count_of_files, size, mul_num):
         index_of_particles_pos = 0
     index_particles += 1
     return image
+
+
+def exploison_animation(path, count_of_files, ex):
+    global index_of_exp, index_of_exp_pos
+    image = pygame.transform.scale(load_image(path.format(index_of_exp_pos), -1), (80, 80))
+    if index_of_exp == 2:
+        index_of_exp_pos += 1
+        index_of_exp = 0
+    if index_of_exp_pos == count_of_files:
+        ex.istrue = False
+    index_of_exp += 1
+    return image, index_of_exp_pos
 
 
 class Camera:
