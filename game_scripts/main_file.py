@@ -68,7 +68,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-            self.fps.tick(20)
+            self.fps.tick(50)
             camera.update(hero)
             for sprite in self.all_sprites:
                 camera.apply(sprite)
