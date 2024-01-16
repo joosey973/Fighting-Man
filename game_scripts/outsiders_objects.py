@@ -44,23 +44,28 @@ class Clouds(pygame.sprite.Sprite):
         self.screen = screen
         self.image = load_image(f"images/clouds/cloud_{random.randint(1, 2)}.png", -1)
         self.rect = self.image.get_rect()
-        self.image = pygame.transform.scale(self.image, (self.rect.width * 3, self.rect.height * 3))
+        self.image = pygame.transform.scale(self.image, (self.rect.width * 4, self.rect.height * 4))
         self.rect = self.image.get_rect()
         Clouds.clouds_list.append(self.rect)
         self.generate_clouds()
 
     def generate_clouds(self):
-        self.rect.x = random.randrange(self.rect.width // 3, self.screen.get_width() - self.rect.width // 3 + 1)
-        self.rect.y = random.randrange(self.rect.height // 3, self.screen.get_height() - self.rect.height + 1)
+        self.rect.x = random.randrange(self.rect.width, self.screen.get_width() - self.rect.width) - self.screen.get_width() // 4
+        self.rect.y = random.randrange(self.rect.height, self.screen.get_height() - self.rect.height)
         new_list_of_clouds_loc = Clouds.clouds_list.copy()
         new_list_of_clouds_loc.remove(self.rect)
         while self.rect.collidelistall(new_list_of_clouds_loc):
-            self.rect.x = random.randrange(self.rect.width // 3, self.screen.get_width() - self.rect.width // 3 + 1)
-            self.rect.y = random.randrange(self.rect.height // 3, self.screen.get_height() - self.rect.height + 1)
+            self.rect.x = random.randrange(self.rect.width, self.screen.get_width() - self.rect.width) - self.screen.get_width() // 4
+            self.rect.y = random.randrange(self.rect.height, self.screen.get_height() - self.rect.height)
 
-    def update(self):
+    def update(self, is_update=False):
+        if is_update:
+            self.rect.right += 1
         if self.rect.right <= 0:
             self.rect.left = self.screen.get_width()
         elif self.rect.left >= self.screen.get_width():
             self.rect.right = 0
-        self.rect = self.rect.move(1, 0)
+        if self.rect.top >= self.screen.get_height():
+            self.rect.bottom = 0
+        elif self.rect.bottom <= 0:
+            self.rect.top = self.screen.get_height()

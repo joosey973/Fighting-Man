@@ -11,13 +11,11 @@ class Hero(pygame.sprite.Sprite):
         self.index_of_hero_pos, self.index = 0, 0
         self.screen = screen
         self.hero_sizes = (14, 18)
-        self.type_of_pos = None
-        self.jump_counter = 0  # счетчик подъема/спуска
-        self.jump_mode = 2  # 0 - в прыжке, 1 - падает, 2 - не прыгает
         self.is_left = False
         self.is_jump = False
-        self.jump_height = 20
-        self.dx, self.dy = 5, self.jump_height
+        self.jump_height = 16
+        self.FPS = 60
+        self.dx, self.dy = 100, self.jump_height
         self.gravity = 1
         self.slide_limit = 0  # лимит будет в 5 пикселей
         self.image = pygame.transform.scale(load_image("images/entities/player/idle/0.png", -1),
@@ -53,49 +51,22 @@ class Hero(pygame.sprite.Sprite):
                 self.dy = self.jump_height
                 self.image = entities_animations("images/entities/player/jump/{}.png", "jump", 1, (14, 18),
                                                  3, self.is_left)
-        elif key[pygame.K_d]:
+        if key[pygame.K_d]:
             self.is_left = False
             if not self.is_jump:
                 self.image = entities_animations("images/entities/player/run/{}.png",
                                                  "run", 7, (14, 18), 3, self.is_left)
-            self.rect.right += self.dx
+            self.rect.right += self.dx / self.FPS
         elif key[pygame.K_a]:
             self.is_left = True
             if not self.is_jump:
                 self.image = entities_animations("images/entities/player/run/{}.png",
                                                  "run", 7, (14, 18), 3, self.is_left)
-            self.rect.left -= self.dx
+            self.rect.left -= self.dx / self.FPS
         else:
             if not self.is_jump:
                 self.image = entities_animations("images/entities/player/idle/{}.png", "idle", 21, (14, 18), 3,
                                                  self.is_left)
-
-        # if (key[pygame.K_w] and self.rect.top - self.dy > 0 and not self.is_jump or
-        #         key[pygame.K_SPACE] and self.rect.top - self.dy > 0) and not self.is_jump:
-        #     self.is_slide = False
-        #     self.is_jump = True
-        #     self.jump_mode = 0
-        # elif (key[pygame.K_s] and self.rect.top - self.dy > 0 and not self.is_jump or
-        #         key[pygame.K_LCTRL] and self.rect.top - self.dy < self.screen.get_height()):
-        #     self.image = entities_animations("images/entities/player/slide/{}.png", "slide", 1, (14, 18), 3,
-        #                                      self.is_left)
-        #     if self.is_left and self.slide_limit > -240:
-        #         self.is_slide = True
-        #         self.rect.left -= self.dx * 4
-        #         self.slide_limit -= self.dx * 4
-        #     elif not self.is_left and self.slide_limit < 240:
-        #         self.is_slide = True
-        #         self.rect.right += self.dx * 4
-        #         self.slide_limit += self.dx * 4
-        # elif self.is_slide and (self.slide_limit == 240 or self.slide_limit == -240):
-        #     self.slide_limit = 0
-        #     self.is_slide = False
-
-        # else:
-
-        # if not self.is_slide:
-        #     self.slide_limit = 0
-        # self.do_jump()
 
     def update(self):
         key = pygame.key.get_pressed()

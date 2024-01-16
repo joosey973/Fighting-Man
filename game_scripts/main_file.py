@@ -42,7 +42,8 @@ class Game:
                  self.vertical_borders, self.horizontal_borders, self.all_sprites)
         [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
                    self.all_sprites) for _ in range(self.start_len_of_particles)]
-        [Clouds(self.screen, self.clouds_sprites, self.all_sprites) for _ in range(self.start_len_of_clouds)]
+        [Clouds(self.screen, self.clouds_sprites, self.all_sprites)
+         for _ in range(self.start_len_of_clouds)]
 
     def update_sprites(self):
         self.clouds_sprites.update()  # Апдейт облаков
@@ -55,20 +56,23 @@ class Game:
         self.hero_sprite.draw(self.screen)
 
     def run(self):
-        self.istrue = True
         is_running = True
         hero = Hero(self.screen, self.hero_sprite, self.all_sprites)
         camera = Camera(self.screen)
+        myevent = pygame.USEREVENT + 1
+        pygame.time.set_timer(myevent, 700)
         while is_running:
-            self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
-                                                    (self.width, self.height)), (0, 0))
-            [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
-                       self.all_sprites) for _ in range(self.start_len_of_particles - len(self.particles))]
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-            self.fps.tick(50)
+                if event.type == myevent:
+                    self.clouds_sprites.update(True)
+            self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
+                                                    (self.width, self.height)), (0, 0))
+            [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
+                       self.all_sprites) for _ in range(self.start_len_of_particles - len(self.particles))]
+            self.fps.tick(60)
             camera.update(hero)
             for sprite in self.all_sprites:
                 camera.apply(sprite)
