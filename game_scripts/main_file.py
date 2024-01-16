@@ -10,7 +10,7 @@ from image_loader import load_image
 
 from outsiders_objects import Clouds, Particles
 
-from level import Block
+from level_example import Block
 
 import pygame
 

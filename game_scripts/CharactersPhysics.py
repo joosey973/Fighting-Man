@@ -2,6 +2,8 @@ from animations import entities_animations
 
 from image_loader import load_image
 
+from level_example import Block
+
 import pygame
 
 
@@ -23,6 +25,10 @@ class Hero(pygame.sprite.Sprite):
                                             (self.hero_sizes[0] * 3, self.hero_sizes[1] * 3))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = 500, 500
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+        self.sprite = sprite
+        self.all_sprites = all_sprites
 
     def do_jump(self):
         if self.jump_mode == 0 and self.jump_counter < 50:
@@ -83,3 +89,6 @@ class Hero(pygame.sprite.Sprite):
     def update(self):
         key = pygame.key.get_pressed()
         self.do_rotate(key)
+
+        if Block(self.screen, self.sprite, self.all_sprites).block[1].colliderect(self.rect.x, self.rect.y + self.dy, self.width, self.height):
+            self.dy = Block().block[1].bottom - self.rect.top
