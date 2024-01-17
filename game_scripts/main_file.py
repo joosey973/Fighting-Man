@@ -15,12 +15,16 @@ import pygame
 
 class Game:
     def __init__(self):
-        self.width, self.height = 1920, 1080
+        self.width, self.height = 1000, 1000
         self.start_len_of_particles = 25
         self.start_len_of_clouds = (self.width * self.height // 100000) + 5
         self.create_groups()
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.fps = pygame.time.Clock()
+        self.clouds_speed = pygame.USEREVENT + 1
+        pygame.time.set_timer(self.clouds_speed, 700)
+        self.leafs_speed = pygame.USEREVENT + 2
+        pygame.time.set_timer(self.leafs_speed, 60)
         self.activate_sprites()
 
     def create_groups(self):
@@ -59,24 +63,25 @@ class Game:
         is_running = True
         hero = Hero(self.screen, self.hero_sprite, self.all_sprites)
         camera = Camera(self.screen)
-        myevent = pygame.USEREVENT + 1
-        pygame.time.set_timer(myevent, 700)
         while is_running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type == myevent:
+                if event.type == self.clouds_speed:
                     self.clouds_sprites.update(True)
+                if event.type == self.leafs_speed:
+                    self.particles.update(True)
+                hero.update(event)
             self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
                                                     (self.width, self.height)), (0, 0))
             [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
                        self.all_sprites) for _ in range(self.start_len_of_particles - len(self.particles))]
-            self.fps.tick(60)
             camera.update(hero)
             for sprite in self.all_sprites:
                 camera.apply(sprite)
             self.update_sprites()
+            self.fps.tick(75)
             pygame.display.update()
 
 
