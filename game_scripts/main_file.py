@@ -82,8 +82,6 @@ class Game:
         hero = Hero(self.screen, self.hero_sprite, self.all_sprites)
         camera = Camera(self.screen)
         while is_running:
-            render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
-            self.tilemap.render(self.screen, offset=render_scroll)
             self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
                                                     (self.width, self.height)), (0, 0))
             [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
@@ -94,6 +92,8 @@ class Game:
                     sys.exit()
             self.fps.tick(20)
             camera.update(hero)
+            render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
+            self.tilemap.render(self.screen, offset=render_scroll)
             for sprite in self.all_sprites:
                 camera.apply(sprite)
             self.update_sprites()
