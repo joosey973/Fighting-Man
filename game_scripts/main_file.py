@@ -6,11 +6,15 @@ from animations import Camera
 
 from collide_system import Boarders
 
-from image_loader import load_image
+# from image_loader import load_image, load_images
+
+from loader import load_image_2, load_images
 
 from outsiders_objects import Clouds, Particles
 
 from level_example import Block
+
+from tilemap import Tilemap
 
 import pygame
 
@@ -24,6 +28,17 @@ class Game:
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.fps = pygame.time.Clock()
         self.activate_sprites()
+
+        self.assets = {
+            'decor': load_images('tiles/decor'),
+            'grass': load_images('tiles/grass'),
+            'large_decor': load_images('tiles/large_decor'),
+            'stone': load_images('tiles/stone'),
+        }
+
+        self.tilemap = Tilemap(self, tile_size=16)
+        self.tilemap.load('map.json')
+        self.scroll = [0, 0]
 
     def create_groups(self):
         self.hero_sprite = pygame.sprite.Group()
@@ -60,11 +75,15 @@ class Game:
 
         self.blocks.draw(self.screen)
 
+    
+
     def run(self):
         is_running = True
         hero = Hero(self.screen, self.hero_sprite, self.all_sprites)
         camera = Camera(self.screen)
         while is_running:
+            render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
+            self.tilemap.render(self.screen, offset=render_scroll)
             self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
                                                     (self.width, self.height)), (0, 0))
             [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
