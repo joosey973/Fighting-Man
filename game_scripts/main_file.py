@@ -6,7 +6,7 @@ from animations import Camera
 
 from collide_system import Boarders
 
-# from image_loader import load_image, load_images
+from image_loader import load_image
 
 from loader import load_image_2, load_images
 

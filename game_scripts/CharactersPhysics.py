@@ -90,5 +90,5 @@ class Hero(pygame.sprite.Sprite):
         key = pygame.key.get_pressed()
         self.do_rotate(key)
 
-        if Block(self.screen, self.sprite, self.all_sprites).block[1].colliderect(self.rect.x, self.rect.y + self.dy, self.width, self.height):
-            self.dy = Block().block[1].bottom - self.rect.top
+        # if Block(self.screen, self.sprite, self.all_sprites).block[1].colliderect(self.rect.x, self.rect.y + self.dy, self.width, self.height):
+        #     self.dy = Block().block[1].bottom - self.rect.top

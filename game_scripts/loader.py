@@ -10,5 +10,5 @@ def load_image_2(path):
 def load_images(path):
     images = []
     for name in sorted(os.listdir('data/images/' + path)):
-        images.append(load_image(path + '/' + name))
+        images.append(load_image_2(path + '/' + name))
     return images
