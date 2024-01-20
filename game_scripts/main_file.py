@@ -29,8 +29,8 @@ class Game:
         self.create_groups()
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.fps = pygame.time.Clock()
-        self.activate_sprites()
         self.tilemap = self.generate_map()
+        self.activate_sprites()
 
     def render_map(self):
         for objects in self.tilemap["tilemap"]:
@@ -65,6 +65,7 @@ class Game:
                    self.all_sprites) for _ in range(self.start_len_of_particles)]
         [Clouds(self.screen, self.clouds_sprites, self.all_sprites) for _ in range(self.start_len_of_clouds)]
         Block(self.screen, self.blocks, self.all_sprites)
+        self.render_map()
 
     def update_sprites(self):
         self.clouds_sprites.update()  # Апдейт облаков
@@ -76,7 +77,7 @@ class Game:
         self.hero_sprite.update()  # Апдейт главного героя
         self.hero_sprite.draw(self.screen)
 
-        self.render_map()
+        self.tilemap_sprites.draw(self.screen)
 
     def run(self):
         is_running = True
