@@ -33,12 +33,10 @@ class Game:
         self.tilemap = self.generate_map()
 
     def render_map(self):
-        for object in self.tilemap["tilemap"]:
-            print(object)
-            for value_object in self.tilemap[object].values():
-                
-                # Tilemap(value_object['pos'], value_object['type'], value_object["variant"], self.tilemap_sprites)
-            
+        for objects in self.tilemap["tilemap"]:
+            value_object = self.tilemap['tilemap'][objects]
+            Tilemap(value_object['pos'], value_object['type'], value_object["variant"], self.tilemap_sprites)
+
     def generate_map(self):
         with open('map.json', 'r', encoding='utf-8') as file:
             data = json.load(file)
@@ -79,8 +77,6 @@ class Game:
         self.hero_sprite.draw(self.screen)
 
         self.render_map()
-
-    
 
     def run(self):
         is_running = True
