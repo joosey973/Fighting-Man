@@ -8,4 +8,5 @@ class Tilemap(pygame.sprite.Sprite):
         super().__init__(sprite_group)
         self.image = load_image(f"images/tiles/{type_of_tile}/{varint_of_tile}.png", -1)
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = pos_x, pos_y
+        self.rect.x, self.rect.y = pos_x, pos_y 
+        print(self.rect.x, self.rect.y)

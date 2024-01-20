@@ -16,6 +16,8 @@ from level_example import Block
 
 from tilemap import Tilemap
 
+import json
+
 import pygame
 
 
@@ -28,17 +30,19 @@ class Game:
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.fps = pygame.time.Clock()
         self.activate_sprites()
+        self.tilemap = self.generate_map()
 
-        self.assets = {
-            'decor': load_images('tiles/decor'),
-            'grass': load_images('tiles/grass'),
-            'large_decor': load_images('tiles/large_decor'),
-            'stone': load_images('tiles/stone'),
-        }
-
-        self.tilemap = Tilemap(self, tile_size=16)
-        self.tilemap.load('map.json')
-        self.scroll = [0, 0]
+    def render_map(self):
+        for object in self.tilemap["tilemap"]:
+            print(object)
+            for value_object in self.tilemap[object].values():
+                
+                # Tilemap(value_object['pos'], value_object['type'], value_object["variant"], self.tilemap_sprites)
+            
+    def generate_map(self):
+        with open('map.json', 'r', encoding='utf-8') as file:
+            data = json.load(file)
+        return data
 
     def create_groups(self):
         self.hero_sprite = pygame.sprite.Group()
@@ -48,6 +52,7 @@ class Game:
         self.particles = pygame.sprite.Group()
         self.clouds_sprites = pygame.sprite.Group()
         self.blocks = pygame.sprite.Group()
+        self.tilemap_sprites = pygame.sprite.Group()
 
     def activate_sprites(self):
         Boarders(5, 5, self.screen.get_width() - 5, 5, self.vertical_borders, self.horizontal_borders,
@@ -73,7 +78,7 @@ class Game:
         self.hero_sprite.update()  # Апдейт главного героя
         self.hero_sprite.draw(self.screen)
 
-        self.blocks.draw(self.screen)
+        self.render_map()
 
     
 
@@ -92,8 +97,6 @@ class Game:
                     sys.exit()
             self.fps.tick(20)
             camera.update(hero)
-            render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
-            self.tilemap.render(self.screen, offset=render_scroll)
             for sprite in self.all_sprites:
                 camera.apply(sprite)
             self.update_sprites()
