@@ -2,7 +2,7 @@ import sys
 
 from CharactersPhysics import Hero
 
-from animations import Camera
+from animations import Camera, enemy_death, hero_death, fire_ball, hero_for_fire_ball
 
 from collide_system import Boarders
 
