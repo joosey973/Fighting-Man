@@ -33,7 +33,7 @@ class Game:
     def render_map(self):
         for objects in self.tilemap["tilemap"]:
             value_object = self.tilemap['tilemap'][objects]
-            Tilemap(value_object['pos'], value_object['type'], value_object["variant"], self.tilemap_sprites)
+            Tilemap(value_object['pos'], value_object['type'], value_object["variant"], self.tilemap_sprites, self.all_sprites)
 
     def generate_map(self):
         with open('map.json', 'r', encoding='utf-8') as file:

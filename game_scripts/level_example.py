@@ -20,7 +20,3 @@ class Block(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = self.screen.get_width() // 2 + 100, self.screen.get_height() // 2 + 25
         self.block = (self.image, self.rect)
-        
-
-    # def update(self):
-    #     self.rect = self.hero.move(self.dx, self.dy)
