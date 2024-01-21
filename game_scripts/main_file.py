@@ -10,6 +10,12 @@ from image_loader import load_image
 
 from outsiders_objects import Clouds, Particles
 
+from level_example import Block
+
+from tilemap import Tilemap
+
+import json
+
 import pygame
 
 
@@ -22,12 +28,26 @@ class Game:
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.hero = Hero(self.screen, self.hero_sprite, self.all_sprites, self.tile_sprites)
         self.fps = pygame.time.Clock()
+
         self.clouds_speed = pygame.USEREVENT + 1
         pygame.time.set_timer(self.clouds_speed, 300)
         self.leafs_speed = pygame.USEREVENT + 2
         pygame.time.set_timer(self.leafs_speed, 60)
 
+
+        self.tilemap = self.generate_map()
+
         self.activate_sprites()
+
+    def render_map(self):
+        for objects in self.tilemap["tilemap"]:
+            value_object = self.tilemap['tilemap'][objects]
+            Tilemap(value_object['pos'], value_object['type'], value_object["variant"], self.tilemap_sprites, self.all_sprites)
+
+    def generate_map(self):
+        with open('map.json', 'r', encoding='utf-8') as file:
+            data = json.load(file)
+        return data
 
     def create_groups(self):
         self.hero_sprite = pygame.sprite.Group()
@@ -36,7 +56,8 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
         self.particles = pygame.sprite.Group()
         self.clouds_sprites = pygame.sprite.Group()
-        self.tile_sprites = pygame.sprite.Group()  # TODO: Нужно будет удалить
+        self.tilemap_sprites = pygame.sprite.Group()
+
 
     def activate_sprites(self):
         Boarders(5, 5, self.screen.get_width() - 5, 5, self.vertical_borders, self.horizontal_borders,
@@ -49,8 +70,8 @@ class Game:
                  self.vertical_borders, self.horizontal_borders, self.all_sprites)
         [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
                    self.all_sprites) for _ in range(self.start_len_of_particles)]
-        [Clouds(self.screen, self.clouds_sprites, self.all_sprites)
-         for _ in range(self.start_len_of_clouds)]
+        [Clouds(self.screen, self.clouds_sprites, self.all_sprites) for _ in range(self.start_len_of_clouds)]
+        self.render_map()
 
     def update_sprites(self):
         self.clouds_sprites.update()  # Апдейт облаков
@@ -61,6 +82,8 @@ class Game:
 
         self.hero_sprite.update()  # Апдейт главного героя
         self.hero_sprite.draw(self.screen)
+
+        self.tilemap_sprites.draw(self.screen)
 
     def run(self):
         is_running = True

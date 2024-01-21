@@ -4,6 +4,7 @@ from image_loader import load_image
 
 from outsiders_objects import Particle
 
+
 import pygame
 
 
@@ -37,6 +38,7 @@ class Hero(pygame.sprite.Sprite):
         if self.particle_sprite_group:  # Если есть спрайты в спрайт-группе
             self.particle_sprite_group.update()
             self.particle_sprite_group.draw(self.screen)
+
 
     # Физика и анимация слайда
     def do_slide(self):
