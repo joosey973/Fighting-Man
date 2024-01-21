@@ -20,9 +20,10 @@ class Game:
         self.start_len_of_clouds = (self.width * self.height // 100000) + 5
         self.create_groups()
         self.screen = pygame.display.set_mode((self.width, self.height))
+        self.hero = Hero(self.screen, self.hero_sprite, self.all_sprites, self.tile_sprites)
         self.fps = pygame.time.Clock()
         self.clouds_speed = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.clouds_speed, 700)
+        pygame.time.set_timer(self.clouds_speed, 300)
         self.leafs_speed = pygame.USEREVENT + 2
         pygame.time.set_timer(self.leafs_speed, 60)
 
@@ -35,6 +36,7 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
         self.particles = pygame.sprite.Group()
         self.clouds_sprites = pygame.sprite.Group()
+        self.tile_sprites = pygame.sprite.Group()  # TODO: Нужно будет удалить
 
     def activate_sprites(self):
         Boarders(5, 5, self.screen.get_width() - 5, 5, self.vertical_borders, self.horizontal_borders,
@@ -62,7 +64,6 @@ class Game:
 
     def run(self):
         is_running = True
-        hero = Hero(self.screen, self.hero_sprite, self.all_sprites)
         camera = Camera(self.screen)
         while is_running:
             for event in pygame.event.get():
@@ -73,12 +74,12 @@ class Game:
                     self.clouds_sprites.update(True)
                 if event.type == self.leafs_speed:
                     self.particles.update(True)
-                hero.update(event)
+                self.hero.update(event)
             self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
                                                     (self.width, self.height)), (0, 0))
             [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
                        self.all_sprites) for _ in range(self.start_len_of_particles - len(self.particles))]
-            camera.update(hero)
+            camera.update(self.hero)
             for sprite in self.all_sprites:
                 camera.apply(sprite)
 
