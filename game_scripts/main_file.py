@@ -2,7 +2,7 @@ import sys
 
 from CharactersPhysics import Hero
 
-from animations import Camera
+from animations import Camera, enemy_death
 
 from collide_system import Boarders
 
@@ -72,6 +72,8 @@ class Game:
             for sprite in self.all_sprites:
                 camera.apply(sprite)
             self.update_sprites()
+            self.screen.blit(enemy_death('images/entities/enemy/death/{}.png', 10, (14, 18), 3), (200, 200))
+
             pygame.display.update()
 
 
