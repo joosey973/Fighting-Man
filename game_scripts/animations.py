@@ -17,7 +17,7 @@ def entities_animations(path, type_of_ev, count_of_files, size, mul_num, is_reve
         index, index_of_hero_img = 0, 0
     image = pygame.transform.scale(load_image(path.format(index_of_hero_img), -1, is_reversed),
                                    (size[0] * mul_num, size[1] * mul_num))
-    if index == 10:
+    if index == 14:
         index_of_hero_img += 1
         index = 0
     if index_of_hero_img == count_of_files:
@@ -58,8 +58,8 @@ class Camera:
         self.screen = screen
 
     def apply(self, obj):
-        obj.rect.x += self.dx // 10
-        obj.rect.y += self.dy // 10
+        obj.rect.x += self.dx // 35
+        obj.rect.y += self.dy // 35
 
     def update(self, target):
         self.dx = -(target.rect.x + target.rect.w // 2 - self.screen.get_width() // 2)
