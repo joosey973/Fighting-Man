@@ -10,21 +10,34 @@ type_of_move_particle = None
 
 index_of_enemy_death, index_of_enemy_death_pic = 0, 0
 
+index_of_hero_death, index_of_hero_death_pic = 0, 0
+
 
 
 def enemy_death(path, count_of_files, size, mul_num, is_reversed=False):
     global index_of_enemy_death, index_of_enemy_death_pic
-
     image = pygame.transform.scale(load_image(path.format(index_of_enemy_death_pic), -1, is_reversed),
                                    (size[0] * mul_num, size[1] * mul_num))
-    if index_of_enemy_death == 3:
+    if index_of_enemy_death == 1:
         index_of_enemy_death_pic += 1
         index_of_enemy_death = 0 
     if index_of_enemy_death_pic == count_of_files:
         index_of_enemy_death_pic = 0
-        offset = 3
     
     index_of_enemy_death += 1
+    return image
+
+def hero_death(path, count_of_files, size, mul_num, is_reversed=False):
+    global index_of_hero_death, index_of_hero_death_pic
+    image = pygame.transform.scale(load_image(path.format(index_of_hero_death_pic), -1, is_reversed),
+                                   (size[0] * mul_num, size[1] * mul_num))
+    if index_of_hero_death == 1:
+        index_of_hero_death_pic += 1
+        index_of_hero_death = 0 
+    if index_of_hero_death_pic == count_of_files:
+        index_of_hero_death_pic = 0
+    
+    index_of_hero_death += 1
     return image
 
 
