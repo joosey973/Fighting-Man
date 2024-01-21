@@ -25,7 +25,7 @@ class Game:
         self.hero = Hero(self.screen, self.hero_sprite, self.all_sprites, self.tile_sprites)
         self.fps = pygame.time.Clock()
         self.clouds_speed = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.clouds_speed, 700)
+        pygame.time.set_timer(self.clouds_speed, 300)
         self.leafs_speed = pygame.USEREVENT + 2
         pygame.time.set_timer(self.leafs_speed, 60)
         self.activate_sprites()
@@ -52,13 +52,16 @@ class Game:
                    self.all_sprites) for _ in range(self.start_len_of_particles)]
         [Clouds(self.screen, self.clouds_sprites, self.all_sprites)
          for _ in range(self.start_len_of_clouds)]
-        Tilemap((600, 530), "grass", 0, self.tile_sprites, self.all_sprites)  # TODO: Нужно будет удалить
+        [Tilemap(self.screen, (300, 600), i, 0, "grass", 0, self.tile_sprites, self.all_sprites)
+         for i in range(10)]  # TODO: Нужно будет удалить
+        [Tilemap(self.screen, (500, 200), 0, i, "grass", 0, self.tile_sprites, self.all_sprites) for i in range(4)]
 
     def update_sprites(self):
         self.clouds_sprites.update()  # Апдейт облаков
         self.clouds_sprites.draw(self.screen)
 
         self.tile_sprites.draw(self.screen)  # TODO: Нужно будет удалить
+        self.tile_sprites.update()
 
         self.particles.update()  # Апдейт листьев
         self.particles.draw(self.screen)
