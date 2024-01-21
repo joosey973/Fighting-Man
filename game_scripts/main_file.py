@@ -15,7 +15,7 @@ import pygame
 
 class Game:
     def __init__(self):
-        self.width, self.height = 1000, 1000
+        self.width, self.height = 1920, 1080
         self.start_len_of_particles = 25
         self.start_len_of_clouds = (self.width * self.height // 100000) + 5
         self.create_groups()
@@ -25,6 +25,7 @@ class Game:
         pygame.time.set_timer(self.clouds_speed, 700)
         self.leafs_speed = pygame.USEREVENT + 2
         pygame.time.set_timer(self.leafs_speed, 60)
+
         self.activate_sprites()
 
     def create_groups(self):
@@ -80,8 +81,9 @@ class Game:
             camera.update(hero)
             for sprite in self.all_sprites:
                 camera.apply(sprite)
+
             self.update_sprites()
-            self.fps.tick(75)
+            self.fps.tick(80)
             pygame.display.update()
 
 

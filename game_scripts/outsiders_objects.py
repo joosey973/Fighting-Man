@@ -76,19 +76,21 @@ class Clouds(pygame.sprite.Sprite):
 
 
 class Particle(pygame.sprite.Sprite):
-    def __init__(self, particle_sprite, hero_pos, is_left):
+    def __init__(self, particle_sprite, hero_pos, is_flight, screen):
         super().__init__(particle_sprite)
+        self.is_flight = is_flight
+        self.screen = screen
         self.image = pygame.transform.scale(load_image(f"images/particles/particle/{random.randrange(0, 3)}.png", -1),
                                             (33, 33))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = hero_pos
-        self.dx = random.choice(list(range(1, 4)) + list(range(-4, 0)))
-        self.dy = random.choice(list(range(1, 4)) + list(range(-4, 0)))
-        self.count = 0
+        self.dx = random.choice(list(range(1, 5)) + list(range(-4, 0)))
+        self.dy = random.choice(list(range(1, 5)) + list(range(-4, 0)))
 
     def update(self):
-        if self.count == 40:
+        if (self.rect.left >= self.screen.get_width() or self.rect.right <= 0 or
+                self.rect.top >= self.screen.get_height() or self.rect.bottom <= 0):
+            self.is_flight = True
             self.kill()
         self.rect.x += self.dx
         self.rect.y += self.dy
-        self.count += 1
