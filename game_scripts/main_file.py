@@ -21,6 +21,10 @@ class Game:
         self.create_groups()
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.fps = pygame.time.Clock()
+        self.clouds_speed = pygame.USEREVENT + 1
+        pygame.time.set_timer(self.clouds_speed, 700)
+        self.leafs_speed = pygame.USEREVENT + 2
+        pygame.time.set_timer(self.leafs_speed, 60)
         self.activate_sprites()
 
     def create_groups(self):
@@ -42,7 +46,8 @@ class Game:
                  self.vertical_borders, self.horizontal_borders, self.all_sprites)
         [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
                    self.all_sprites) for _ in range(self.start_len_of_particles)]
-        [Clouds(self.screen, self.clouds_sprites, self.all_sprites) for _ in range(self.start_len_of_clouds)]
+        [Clouds(self.screen, self.clouds_sprites, self.all_sprites)
+         for _ in range(self.start_len_of_clouds)]
 
     def update_sprites(self):
         self.clouds_sprites.update()  # Апдейт облаков
@@ -59,23 +64,24 @@ class Game:
         hero = Hero(self.screen, self.hero_sprite, self.all_sprites)
         camera = Camera(self.screen)
         while is_running:
-            self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
-                                                    (self.width, self.height)), (0, 0))
-            [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
-                       self.all_sprites) for _ in range(self.start_len_of_particles - len(self.particles))]
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-            self.fps.tick(20)
+                if event.type == self.clouds_speed:
+                    self.clouds_sprites.update(True)
+                if event.type == self.leafs_speed:
+                    self.particles.update(True)
+                hero.update(event)
+            self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
+                                                    (self.width, self.height)), (0, 0))
+            [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
+                       self.all_sprites) for _ in range(self.start_len_of_particles - len(self.particles))]
             camera.update(hero)
             for sprite in self.all_sprites:
                 camera.apply(sprite)
             self.update_sprites()
-            # self.screen.blit(enemy_death('images/entities/enemy/death/{}.png', 21, (14, 18), 10), (200, 700))
-            # self.screen.blit(hero_death('images/entities/player/death/{}.png', 27, (14, 18), 3), (400, 400))
-            self.screen.blit(fire_ball('images/entities/player/fire_ball/{}.png', 8, (40, 18), 4), (300, 300))
-            self.screen.blit(hero_for_fire_ball('images/entities/player/hero_fire_ball/{}.png', 1, (40, 18), 4), (300, 300))
+            self.fps.tick(75)
             pygame.display.update()
 
 
