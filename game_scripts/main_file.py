@@ -73,7 +73,6 @@ class Game:
                 camera.apply(sprite)
             self.update_sprites()
             self.screen.blit(enemy_death('images/entities/enemy/death/{}.png', 21, (14, 18), 10), (200, 700))
-            self.screen.blit(enemy_death('images/entities/enemy/death1/{}.png', 21, (14, 18), 10), (200, 200))
             self.screen.blit(hero_death('images/entities/player/death/{}.png', 27, (14, 18), 3), (400, 400))
 
             pygame.display.update()
