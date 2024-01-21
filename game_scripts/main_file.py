@@ -8,8 +8,6 @@ from collide_system import Boarders
 
 from image_loader import load_image
 
-from loader import load_image_2, load_images
-
 from outsiders_objects import Clouds, Particles
 
 from level_example import Block
