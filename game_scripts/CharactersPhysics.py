@@ -20,27 +20,16 @@ class Hero(pygame.sprite.Sprite):
         self.slide_count = 0
         # ---
         # --- Для прыжка и движения по горизонтали
-        self.is_drop = True
+        self.jumps = 2
         self.vel_y = 0
         self.is_jumping = False
-        self.gravity = 1
+        self.gravity = 0.8
         self.dx, self.dy = 0, 0
         # --- Инициализация картинки, объявления хитбокса и положения относительно экрана
         self.image = pygame.transform.scale(load_image("images/entities/player/idle/0.png", -1),
                                             (self.hero_sizes[0] * 4, self.hero_sizes[1] * 4))
         self.rect = self.image.get_rect()
-        # self.rect.width //= 2
         self.rect.x, self.rect.y = 700, 0
-
-    # Функция для прыжка
-
-    def do_jump(self):
-        self.vel_y += self.gravity
-        if self.vel_y > 20:
-            self.vel_y = 20
-        self.dy += self.vel_y
-        self.image = entities_animations("images/entities/player/jump/{}.png",
-                                         "jump", 1, (14, 18), 4, self.is_left)
 
     # Физика и анимация слайда
     def do_slide(self):
@@ -81,23 +70,30 @@ class Hero(pygame.sprite.Sprite):
         if event is not None and event.type == pygame.KEYDOWN:
             if (event.key == pygame.K_w or key[pygame.K_SPACE]):
                 self.is_jumping = True
-                self.vel_y = -20
+                self.jumps = self.jumps - 1 if self.jumps > 0 else 2
+                self.vel_y = -20 if self.jumps > 0 else self.vel_y
+                self.image = entities_animations("images/entities/player/jump/{}.png",
+                                                 "jump", 1, (14, 18), 4, self.is_left)
 
             if event.key == pygame.K_LSHIFT:
                 self.image = pygame.transform.scale(load_image("images/particles/particle/0.png",
                                                                -1), (25, 25))
                 self.is_slide = True
 
+        # Физика прыжка
 
+        self.vel_y += self.gravity
+        if self.vel_y > 20:
+            self.vel_y = 20
+        self.dy += self.vel_y
 
+        # Физика и анимация движения по горизонтали и статического положения
+        self.do_horizontal_and_static_move(key)
+
+        # Физика слайда
         self.do_slide()
         if self.is_slide:
             return
-        # Физика и анимация прыжка
-        if self.is_jumping:
-            self.do_jump()
-        # Физика и анимация движения по горизонтали и статического положения
-        self.do_horizontal_and_static_move(key)
 
         if self.particle_sprite_group:  # Если есть спрайты в спрайт-группе
             self.particle_sprite_group.update()
@@ -107,15 +103,12 @@ class Hero(pygame.sprite.Sprite):
 
             if tile.rect.colliderect(self.rect.x, self.rect.y + self.dy, self.rect.width, self.rect.height):
                 if self.rect.bottom < tile.rect.centery:
-                    if self.vel_y > 0:
-                        self.rect.bottom = tile.rect.top - 5
-                        self.dy = 0
-                        self.vel_y = 0
-                        self.is_jumping = False
+                    self.rect.bottom = tile.rect.top
+                    self.dy = 0
+                    self.vel_y = 0
+                    self.is_jumping = False
                 elif self.rect.top > tile.rect.centery:
-                    self.rect.top = tile.rect.bottom + 3
-            # if (not tile.rect.colliderect(self.rect.x + self.dx, self.rect.y, self.rect.width, self.rect.height) or not tile.rect.colliderect(self.rect.x, self.rect.y + self.dy, self.rect.width, self.rect.height)) and not self.is_jumping:
-            #     self.dy = 10
+                    self.rect.top = tile.rect.bottom
             if tile.rect.colliderect(self.rect.x + self.dx, self.rect.y, self.rect.width, self.rect.height):
                 self.dx = 0
 
@@ -123,5 +116,4 @@ class Hero(pygame.sprite.Sprite):
         self.rect.y += self.dy
 
     def update(self, event=None):
-        pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
         self.do_rotate(event)

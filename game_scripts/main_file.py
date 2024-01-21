@@ -10,8 +10,6 @@ from image_loader import load_image
 
 from outsiders_objects import Clouds, Particles
 
-from tilemap import Tilemap
-
 import pygame
 
 
@@ -52,16 +50,10 @@ class Game:
                    self.all_sprites) for _ in range(self.start_len_of_particles)]
         [Clouds(self.screen, self.clouds_sprites, self.all_sprites)
          for _ in range(self.start_len_of_clouds)]
-        [Tilemap(self.screen, (300, 600), i, 0, "grass", 0, self.tile_sprites, self.all_sprites)
-         for i in range(10)]  # TODO: Нужно будет удалить
-        [Tilemap(self.screen, (500, 200), 0, i, "grass", 0, self.tile_sprites, self.all_sprites) for i in range(4)]
 
     def update_sprites(self):
         self.clouds_sprites.update()  # Апдейт облаков
         self.clouds_sprites.draw(self.screen)
-
-        self.tile_sprites.draw(self.screen)  # TODO: Нужно будет удалить
-        self.tile_sprites.update()
 
         self.particles.update()  # Апдейт листьев
         self.particles.draw(self.screen)
