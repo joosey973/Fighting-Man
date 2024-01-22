@@ -55,20 +55,20 @@ class Hero(pygame.sprite.Sprite):
     def do_horizontal_and_static_move(self, key):
         if key[pygame.K_d]:
             self.is_left = False
-            if not self.is_jump and not self.is_dash:
+            if not self.is_jumping and not self.is_dash:
                 self.image = entities_animations("images/entities/player/run/{}.png",
                                                  "run", 7, (14, 18), 4, self.is_left)
             self.dx += 2
 
         elif key[pygame.K_a]:
             self.is_left = True
-            if not self.is_jump and not self.is_dash:
+            if not self.is_jumping and not self.is_dash:
                 self.image = entities_animations("images/entities/player/run/{}.png",
                                                  "run", 7, (14, 18), 4, self.is_left)
             self.dx -= 2
 
         else:
-            if not self.is_jump and not self.is_dash:
+            if not self.is_jumping and not self.is_dash:
                 if not self.is_jumping:
                     self.image = entities_animations("images/entities/player/idle/{}.png", "idle",
                                                      21, (14, 18), 4,
@@ -78,7 +78,7 @@ class Hero(pygame.sprite.Sprite):
         if self.dash_count == 50:
             self.dash_count = 0
             self.is_dash = False
-        if not self.is_jump:
+        if not self.is_jumping:
             self.image = entities_animations("images/entities/player/slide/{}.png", "slide",
                                              1, (14, 18), 3, self.is_left)
         self.rect.x = self.rect.x + 4 if not self.is_left else self.rect.x - 4
