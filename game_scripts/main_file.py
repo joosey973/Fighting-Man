@@ -10,8 +10,6 @@ from image_loader import load_image
 
 from outsiders_objects import Clouds, Particles
 
-from level_example import Block
-
 from tilemap import Tilemap
 
 import json
@@ -26,7 +24,7 @@ class Game:
         self.start_len_of_clouds = (self.width * self.height // 100000) + 5
         self.create_groups()
         self.screen = pygame.display.set_mode((self.width, self.height))
-        self.hero = Hero(self.screen, self.hero_sprite, self.all_sprites, self.tile_sprites)
+        self.hero = Hero(self.screen, self.hero_sprite, self.all_sprites, self.tilemap_sprites)
         self.fps = pygame.time.Clock()
 
         self.clouds_speed = pygame.USEREVENT + 1
@@ -90,6 +88,15 @@ class Game:
         self.tilemap_sprites.draw(self.screen)
 
     def run(self):
+        pygame.init()
+        pygame.mixer.music.load('data/music.mp3')
+        pygame.mixer.music.play(loops=-1)
+        pygame.mixer.Channel(0).set_volume(0.1)
+        pygame.mixer.Channel(0).play(pygame.mixer.Sound('data/music.mp3'))
+        pygame.mixer.music.load('data/sfx/ambience.wav')
+        pygame.mixer.music.play(loops=-1)
+        pygame.mixer.Channel(1).set_volume(0.1)
+        pygame.mixer.Channel(1).play(pygame.mixer.Sound('data/sfx/ambience.wav'))
         is_running = True
         camera = Camera(self.screen)
         while is_running:
