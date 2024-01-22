@@ -4,6 +4,7 @@ from image_loader import load_image
 
 from outsiders_objects import Particle
 
+
 import pygame
 
 
@@ -23,7 +24,7 @@ class Hero(pygame.sprite.Sprite):
         self.jumps = 2
         self.vel_y = 0
         self.is_jumping = False
-        self.gravity = 0.8
+        self.gravity = 0.2
         self.dx, self.dy = 0, 0
         # --- Для дэша персонажа
         self.is_dash = False
@@ -31,12 +32,9 @@ class Hero(pygame.sprite.Sprite):
 
         # --- Инициализация картинки, объявления хитбокса и положения относительно экрана
         self.image = pygame.transform.scale(load_image("images/entities/player/idle/0.png", -1),
-                                            (self.hero_sizes[0] * 4, self.hero_sizes[1] * 4))
+                                            (self.hero_sizes[0] * 3.5, self.hero_sizes[1] * 3.5))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = self.screen.get_width() // 2, self.screen.get_height() // 2
-        if self.particle_sprite_group:  # Если есть спрайты в спрайт-группе
-            self.particle_sprite_group.update()
-            self.particle_sprite_group.draw(self.screen)
 
     # Физика и анимация слайда
     def do_slide(self):
@@ -57,21 +55,21 @@ class Hero(pygame.sprite.Sprite):
             self.is_left = False
             if not self.is_jumping and not self.is_dash:
                 self.image = entities_animations("images/entities/player/run/{}.png",
-                                                 "run", 7, (14, 18), 4, self.is_left)
+                                                 "run", 7, (14, 18), 3.5, self.is_left)
             self.dx += 2
 
         elif key[pygame.K_a]:
             self.is_left = True
             if not self.is_jumping and not self.is_dash:
                 self.image = entities_animations("images/entities/player/run/{}.png",
-                                                 "run", 7, (14, 18), 4, self.is_left)
+                                                 "run", 7, (14, 18), 3.5, self.is_left)
             self.dx -= 2
 
         else:
             if not self.is_jumping and not self.is_dash:
                 if not self.is_jumping:
                     self.image = entities_animations("images/entities/player/idle/{}.png", "idle",
-                                                     21, (14, 18), 4,
+                                                     21, (14, 18), 3.5,
                                                      self.is_left)
 
     def do_dash(self):
@@ -93,20 +91,22 @@ class Hero(pygame.sprite.Sprite):
             if (event.key == pygame.K_w or key[pygame.K_SPACE]):
                 self.is_jumping = True
                 self.jumps = self.jumps - 1 if self.jumps > 0 else 2
-                self.vel_y = -20 if self.jumps > 0 else self.vel_y
+                self.vel_y = -10 if self.jumps > 0 else self.vel_y
                 self.image = entities_animations("images/entities/player/jump/{}.png",
-                                                 "jump", 1, (14, 18), 4, self.is_left)
+                                                 "jump", 1, (14, 18), 3.5, self.is_left)
 
             if event.key == pygame.K_LSHIFT:
                 self.image = pygame.transform.scale(load_image("images/particles/particle/0.png",
                                                                -1), (25, 25))
                 self.is_slide = True
+            if pygame.key.get_mods() & pygame.KMOD_CTRL:
+                self.is_dash = True
 
         # Физика прыжка
 
         self.vel_y += self.gravity
-        if self.vel_y > 20:
-            self.vel_y = 20
+        if self.vel_y > 10:
+            self.vel_y = 10
         self.dy += self.vel_y
 
         # Физика дэша
@@ -142,4 +142,5 @@ class Hero(pygame.sprite.Sprite):
         self.rect.y += self.dy
 
     def update(self, event=None):
+        pygame.draw.rect(self.screen, (255, 255, 255), self.rect, 2)
         self.do_rotate(event)
