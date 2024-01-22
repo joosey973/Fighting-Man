@@ -40,12 +40,16 @@ class Game:
         self.activate_sprites()
 
     def render_map(self):
+        for objects_decor in self.tilemap['offgrid']:
+            coord = "offgrid"
+            Tilemap(coord, objects_decor['pos'], objects_decor['type'], objects_decor['variant'], self.tilemap_sprites, self.all_sprites)
         for objects in self.tilemap["tilemap"]:
             value_object = self.tilemap['tilemap'][objects]
-            Tilemap(value_object['pos'], value_object['type'], value_object["variant"], self.tilemap_sprites, self.all_sprites)
+            coord = 'tilemap'
+            Tilemap(coord, value_object['pos'], value_object['type'], value_object["variant"], self.tilemap_sprites, self.all_sprites)
 
     def generate_map(self):
-        with open('map.json', 'r', encoding='utf-8') as file:
+        with open('level_4.json', 'r', encoding='utf-8') as file:
             data = json.load(file)
         return data
 
