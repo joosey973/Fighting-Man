@@ -123,8 +123,8 @@ class Camera:
         self.screen = screen
 
     def apply(self, obj):
-        obj.rect.x += self.dx // 35
-        obj.rect.y += self.dy // 35
+        obj.rect.x += self.dx // 50
+        obj.rect.y += self.dy // 50
 
     def update(self, target):
         self.dx = -(target.rect.x + target.rect.w // 2 - self.screen.get_width() // 2)
