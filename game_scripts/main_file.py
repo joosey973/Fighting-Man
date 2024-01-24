@@ -26,7 +26,7 @@ class Game:
         self.start_len_of_clouds = (self.width * self.height // 100000) + 5
         self.create_groups()
         self.screen = pygame.display.set_mode((self.width, self.height))
-        self.hero = Hero(self.screen, self.hero_sprite, self.all_sprites, self.tile_sprites)
+        self.hero = Hero(self.screen, self.hero_sprite, self.all_sprites, self.tilemap_sprites)
         self.fps = pygame.time.Clock()
 
         self.clouds_speed = pygame.USEREVENT + 1
