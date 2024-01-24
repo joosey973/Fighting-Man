@@ -14,7 +14,7 @@ class Tilemap(pygame.sprite.Sprite):
             size_tile = [16, 16]
             increase = 2.5
 
-            self.image = pygame.transform.scale(load_image(f"images/tiles/{type_of_tile}/{varint_of_tile}.png"),
+            self.image = pygame.transform.scale(simple_load_image(f"images/tiles/{type_of_tile}/{varint_of_tile}.png"),
                                                 (size_tile[0] * increase, size_tile[1] * increase))
 
             self.rect = self.image.get_rect()
