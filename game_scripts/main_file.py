@@ -88,15 +88,10 @@ class Game:
         self.tilemap_sprites.draw(self.screen)
 
     def run(self):
-        pygame.init()
-        pygame.mixer.music.load('data/music.mp3')
-        pygame.mixer.music.play(loops=-1)
-        pygame.mixer.Channel(0).set_volume(0.1)
-        pygame.mixer.Channel(0).play(pygame.mixer.Sound('data/music.mp3'))
-        pygame.mixer.music.load('data/sfx/ambience.wav')
-        pygame.mixer.music.play(loops=-1)
-        pygame.mixer.Channel(1).set_volume(0.1)
-        pygame.mixer.Channel(1).play(pygame.mixer.Sound('data/sfx/ambience.wav'))
+        pygame.mixer.init()
+        pygame.mixer.music.load('data/music_minecraft.mp3')
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.3)
         is_running = True
         camera = Camera(self.screen)
         while is_running:

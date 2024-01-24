@@ -38,7 +38,7 @@ class Hero(pygame.sprite.Sprite):
         if self.particle_sprite_group:  # Если есть спрайты в спрайт-группе
             self.particle_sprite_group.update()
             self.particle_sprite_group.draw(self.screen)
-
+        
 
     # Физика и анимация слайда
     def do_slide(self):
@@ -98,16 +98,17 @@ class Hero(pygame.sprite.Sprite):
                 self.vel_y = -20 if self.jumps > 0 else self.vel_y
                 self.image = entities_animations("images/entities/player/jump/{}.png",
                                                  "jump", 1, (14, 18), 4, self.is_left)
-                pygame.mixer.music.load('data/sfx/jump.wav')
-                pygame.mixer.music.play(1)
+                sound_jump = pygame.mixer.Sound('data/sfx/jump.wav')
+                sound_jump.set_volume(0.3)
+                sound_jump.play()
 
             if event.key == pygame.K_LSHIFT:
                 self.image = pygame.transform.scale(load_image("images/particles/particle/0.png",
                                                                -1), (25, 25))
                 self.is_slide = True
-                pygame.mixer.music.load('data/sfx/dash.wav')
-                pygame.mixer.music.set_volume(0.3)
-                pygame.mixer.music.play(1)
+                sound_dash = pygame.mixer.Sound('data/sfx/dash.wav')
+                sound_dash.set_volume(0.2)
+                sound_dash.play()
 
         # Физика прыжка
 
@@ -150,3 +151,6 @@ class Hero(pygame.sprite.Sprite):
 
     def update(self, event=None):
         self.do_rotate(event)
+
+    def death(self):
+        self.kill()
