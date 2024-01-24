@@ -60,6 +60,7 @@ class Hero(pygame.sprite.Sprite):
         if key[pygame.K_d]:
             self.is_left = False
             if not self.is_jumping and not self.is_dash:
+            if not self.is_jumping and not self.is_dash:
                 self.image = entities_animations("images/entities/player/run/{}.png",
                                                  "run", 7, (14, 18), 3.5, self.is_left)
             self.dx += 2
@@ -67,11 +68,13 @@ class Hero(pygame.sprite.Sprite):
         elif key[pygame.K_a]:
             self.is_left = True
             if not self.is_jumping and not self.is_dash:
+            if not self.is_jumping and not self.is_dash:
                 self.image = entities_animations("images/entities/player/run/{}.png",
                                                  "run", 7, (14, 18), 3.5, self.is_left)
             self.dx -= 2
 
         else:
+            if not self.is_jumping and not self.is_dash:
             if not self.is_jumping and not self.is_dash:
                 if not self.is_jumping:
                     self.image = entities_animations("images/entities/player/idle/{}.png", "idle",
@@ -82,6 +85,7 @@ class Hero(pygame.sprite.Sprite):
         if self.dash_count == 50:
             self.dash_count = 0
             self.is_dash = False
+        if not self.is_jumping:
         if not self.is_jumping:
             self.image = entities_animations("images/entities/player/slide/{}.png", "slide",
                                              1, (14, 18), 3, self.is_left)
@@ -100,6 +104,9 @@ class Hero(pygame.sprite.Sprite):
                 self.vel_y = -7 if self.jumps > 0 else self.vel_y
                 self.image = entities_animations("images/entities/player/jump/{}.png",
                                                  "jump", 1, (14, 18), 3.5, self.is_left)
+                sound_jump = pygame.mixer.Sound('data/sfx/jump.wav')
+                sound_jump.set_volume(0.3)
+                sound_jump.play()
 
             if event.key == pygame.K_LSHIFT:
                 self.image = pygame.transform.scale(load_image("images/particles/particle/0.png",
@@ -109,6 +116,9 @@ class Hero(pygame.sprite.Sprite):
                 self.check_collide()
             if pygame.key.get_mods() & pygame.KMOD_CTRL:
                 self.is_dash = True
+                sound_dash = pygame.mixer.Sound('data/sfx/dash.wav')
+                sound_dash.set_volume(0.2)
+                sound_dash.play()
 
         # Физика и анимация движения по горизонтали и статического положения
         self.vel_y += self.gravity

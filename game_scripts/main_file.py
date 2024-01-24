@@ -87,6 +87,10 @@ class Game:
         self.hero_sprite.draw(self.screen)
 
     def run(self):
+        pygame.mixer.init()
+        pygame.mixer.music.load('data/music_minecraft.mp3')
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.3)
         is_running = True
         camera = Camera(self.screen)
         while is_running:
