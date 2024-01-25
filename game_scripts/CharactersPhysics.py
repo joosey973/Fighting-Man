@@ -110,11 +110,14 @@ class Hero(pygame.sprite.Sprite):
                 self.is_slide = True
                 self.change_rect((self.rect.x, self.rect.y + self.rect.width // 2))
                 self.check_collide()
-            if pygame.key.get_mods() & pygame.KMOD_CTRL:
-                self.is_dash = True
                 sound_dash = pygame.mixer.Sound('data/sfx/dash.wav')
                 sound_dash.set_volume(0.2)
                 sound_dash.play()
+            if pygame.key.get_mods() & pygame.KMOD_CTRL:
+                self.is_dash = True
+                sound_slide = pygame.mixer.Sound('data/sfx/slide.mp3')
+                sound_slide.set_volume(0.2)
+                sound_slide.play()
 
         # Физика и анимация движения по горизонтали и статического положения
         self.vel_y += self.gravity
