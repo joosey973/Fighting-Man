@@ -121,6 +121,9 @@ class Hero(pygame.sprite.Sprite):
 
                 self.image = entities_animations("images/entities/player/jump/{}.png",
                                                  "jump", 1, (14, 18), 3.5, self.is_left)
+                sound_jump = pygame.mixer.Sound('data/sfx/jump.wav')
+                sound_jump.set_volume(0.3)
+                sound_jump.play()
 
             elif event.key == pygame.K_LSHIFT:
                 self.is_over = True
@@ -130,8 +133,14 @@ class Hero(pygame.sprite.Sprite):
                                                                -1), (25, 25))
                 self.is_slide = True
                 self.check_collide()
+                sound_dash = pygame.mixer.Sound('data/sfx/dash.wav')
+                sound_dash.set_volume(0.2)
+                sound_dash.play()
             elif event.key == pygame.K_LCTRL:
                 self.is_dash = True
+                sound_slide = pygame.mixer.Sound('data/sfx/slide.mp3')
+                sound_slide.set_volume(0.2)
+                sound_slide.play()
 
         elif event is not None and event.type == pygame.KEYUP:
             if event.key == pygame.K_LCTRL:

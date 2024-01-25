@@ -17,5 +17,12 @@ def load_image(path, color_key=None, is_reversed_x=False):
         image.set_colorkey(color_key)
     else:
         image = image.convert_alpha()
+
     image = pygame.transform.flip(image, is_reversed_x, False)
     return image
+
+
+def simple_load_image(path):
+    img = pygame.image.load('data/' + path).convert()
+    img.set_colorkey((0, 0, 0))
+    return img
