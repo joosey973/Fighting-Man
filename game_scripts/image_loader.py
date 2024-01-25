@@ -4,7 +4,7 @@ import sys
 import pygame
 
 
-def load_image(path, color_key=None, is_reversed=False):
+def load_image(path, color_key=None, is_reversed_x=False):
     fullname = os.path.join('data', path)
     if not os.path.isfile(fullname):
         print("Такого файла нет")
@@ -17,8 +17,8 @@ def load_image(path, color_key=None, is_reversed=False):
         image.set_colorkey(color_key)
     else:
         image = image.convert_alpha()
-    if is_reversed:
-        image = pygame.transform.flip(image, True, False)
+
+    image = pygame.transform.flip(image, is_reversed_x, False)
     return image
 
 
