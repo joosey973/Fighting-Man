@@ -48,7 +48,7 @@ class Tilemap(pygame.sprite.Sprite):
                     f"images/entities/{type_of_tile}/idle/{varint_of_tile}.png", -1), (size_tile[0] * increase, size_tile[1] * increase))
                 self.rect = self.image.get_rect()
                 self.rect.x, self.rect.y = pos[0], pos[1]
-            if type_of_tile == 'hero':
+            if type_of_tile == 'player':
                 size_tile = load_image(f"images/entities/{type_of_tile}/idle/{varint_of_tile}.png").get_rect().size
                 # коэффициенты для расставление объектов на нужных местах
                 a = size_tile[0] / 16
