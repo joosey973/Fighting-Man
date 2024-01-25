@@ -7,7 +7,14 @@ from outsiders_objects import Particle
 import pygame
 
 import random
-import time
+
+
+class Enemies(pygame.sprite.Sprite):
+    def __init__(self, enemies_sprite_group, all_sprite_group):
+        super().__init__(enemies_sprite_group, all_sprite_group)
+        self.image = pygame.transform.scale(load_image("images/entities/enemy/idle/00.png", -1), (14 * 3.5, 18 * 3.5))
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = 500, 500
 
 
 class Hero(pygame.sprite.Sprite):

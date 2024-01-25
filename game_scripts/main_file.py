@@ -1,6 +1,6 @@
 import sys
 
-from CharactersPhysics import Hero
+from CharactersPhysics import Hero, Enemies
 
 from animations import Camera, enemy_death, hero_death, fire_ball, hero_for_fire_ball
 
@@ -21,7 +21,7 @@ import pygame
 
 class Game:
     def __init__(self):
-        self.width, self.height = 960, 600
+        self.width, self.height = 1920, 1080
         self.start_len_of_particles = 25
         self.start_len_of_clouds = (self.width * self.height // 100000) + 5
         self.create_groups()
@@ -29,7 +29,7 @@ class Game:
         self.hero = Hero(self.screen, self.hero_sprite, self.all_sprites, self.tilemap_sprites)
         self.fps = pygame.time.Clock()
         self.clouds_speed = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.clouds_speed, 300)
+        pygame.time.set_timer(self.clouds_speed, 100)
         self.leafs_speed = pygame.USEREVENT + 2
         pygame.time.set_timer(self.leafs_speed, 60)
         self.tilemap = self.generate_map()
@@ -62,6 +62,7 @@ class Game:
         self.clouds_sprites = pygame.sprite.Group()
         self.tilemap_sprites = pygame.sprite.Group()
         self.other_sprite_group = pygame.sprite.Group()
+        self.enemies_sprite_group = pygame.sprite.Group()
 
     def activate_sprites(self):
         Boarders(5, 5, self.screen.get_width() - 5, 5, self.vertical_borders, self.horizontal_borders,
@@ -74,7 +75,7 @@ class Game:
                  self.vertical_borders, self.horizontal_borders, self.all_sprites)
         [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
                    self.all_sprites) for _ in range(self.start_len_of_particles)]
-        [Clouds(self.screen, self.clouds_sprites, self.all_sprites) for _ in range(self.start_len_of_clouds)]
+        Enemies(self.enemies_sprite_group, self.all_sprites)
         self.render_map()
 
     def update_sprites(self):
@@ -89,22 +90,33 @@ class Game:
 
         self.hero_sprite.update()  # Апдейт главного героя
         self.hero_sprite.draw(self.screen)
-    
+
+        self.enemies_sprite_group.draw(self.screen)
+
     def menu(self):
         menu = True
+        [Clouds(self.screen, self.clouds_sprites, self.all_sprites) for _ in range(self.start_len_of_clouds)]
         while menu:
-            self.screen.fill((0, 0, 0))
+            self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
+                                                    (self.width, self.height)), (0, 0))
+            self.clouds_sprites.draw(self.screen)
             self.button.check_hover(pygame.mouse.get_pos())
             self.button.draw(self.screen)
-            self.fps.tick(80)
-            pygame.display.update()
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                if event.type == self.clouds_speed:
+                    self.clouds_sprites.update(True)
                 if event.type == pygame.USEREVENT and event.button == self.button:
+                    for sprite in self.clouds_sprites:
+                        sprite.kill()
                     self.run()
                 self.button.handle_event(event)
+
+            self.fps.tick(80)
+            pygame.display.update()
 
     def run(self):
         pygame.mixer.init()
@@ -119,6 +131,8 @@ class Game:
         camera.update(self.hero, coof)
         for sprite in self.all_sprites:
             camera.apply(sprite)
+        pygame.time.set_timer(self.clouds_speed, 300)
+        [Clouds(self.screen, self.clouds_sprites, self.all_sprites) for _ in range(self.start_len_of_clouds)]
         while is_running:
             if count < 30:
                 count += 1
