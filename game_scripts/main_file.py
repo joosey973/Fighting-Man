@@ -26,30 +26,28 @@ class Game:
         self.start_len_of_clouds = (self.width * self.height // 100000) + 5
         self.create_groups()
         self.screen = pygame.display.set_mode((self.width, self.height))
-        self.hero = Hero(self.screen, self.hero_sprite, self.all_sprites, self.tile_sprites)
+        self.hero = Hero(self.screen, self.hero_sprite, self.all_sprites, self.tilemap_sprites)
         self.fps = pygame.time.Clock()
-
         self.clouds_speed = pygame.USEREVENT + 1
         pygame.time.set_timer(self.clouds_speed, 300)
         self.leafs_speed = pygame.USEREVENT + 2
         pygame.time.set_timer(self.leafs_speed, 60)
-
-
         self.tilemap = self.generate_map()
-
         self.activate_sprites()
 
     def render_map(self):
         for objects_decor in self.tilemap['offgrid']:
             coord = "offgrid"
-            Tilemap(coord, objects_decor['pos'], objects_decor['type'], objects_decor['variant'], self.tilemap_sprites, self.all_sprites)
+            Tilemap(coord, objects_decor['pos'], objects_decor['type'], objects_decor['variant'], self.tilemap_sprites,
+                    self.other_sprite_group, self.all_sprites)
         for objects in self.tilemap["tilemap"]:
             value_object = self.tilemap['tilemap'][objects]
             coord = 'tilemap'
-            Tilemap(coord, value_object['pos'], value_object['type'], value_object["variant"], self.tilemap_sprites, self.all_sprites)
+            Tilemap(coord, value_object['pos'], value_object['type'], value_object["variant"], self.tilemap_sprites,
+                    self.other_sprite_group, self.all_sprites)
 
     def generate_map(self):
-        with open('level_4.json', 'r', encoding='utf-8') as file:
+        with open('level_1.json', 'r', encoding='utf-8') as file:
             data = json.load(file)
         return data
 
@@ -61,7 +59,7 @@ class Game:
         self.particles = pygame.sprite.Group()
         self.clouds_sprites = pygame.sprite.Group()
         self.tilemap_sprites = pygame.sprite.Group()
-
+        self.other_sprite_group = pygame.sprite.Group()
 
     def activate_sprites(self):
         Boarders(5, 5, self.screen.get_width() - 5, 5, self.vertical_borders, self.horizontal_borders,
@@ -84,15 +82,25 @@ class Game:
         self.particles.update()  # Апдейт листьев
         self.particles.draw(self.screen)
 
+        self.other_sprite_group.draw(self.screen)
+        self.tilemap_sprites.draw(self.screen)
+
         self.hero_sprite.update()  # Апдейт главного героя
         self.hero_sprite.draw(self.screen)
-
-        self.tilemap_sprites.draw(self.screen)
 
     def run(self):
         is_running = True
         camera = Camera(self.screen)
+        count = 0
+        coof = 100
+        camera.update(self.hero, coof)
+        for sprite in self.all_sprites:
+            camera.apply(sprite)
         while is_running:
+            if count < 30:
+                count += 1
+            else:
+                coof = 2
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -106,7 +114,7 @@ class Game:
                                                     (self.width, self.height)), (0, 0))
             [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
                        self.all_sprites) for _ in range(self.start_len_of_particles - len(self.particles))]
-            camera.update(self.hero)
+            camera.update(self.hero, coof)
             for sprite in self.all_sprites:
                 camera.apply(sprite)
 
