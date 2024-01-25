@@ -34,7 +34,8 @@ class Game:
         pygame.time.set_timer(self.leafs_speed, 60)
         self.tilemap = self.generate_map()
         self.activate_sprites()
-        self.button = Menu(self.width / 2 - (200 / 2), 300, 200, 90, 'Старт', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        self.button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, 'Старт', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        self.video_settings_button = Menu(self.width / 2 - (200 / 2), self.height - 470, 200, 90, 'Настройки', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
 
     def render_map(self):
         for objects_decor in self.tilemap['offgrid']:
@@ -95,6 +96,8 @@ class Game:
             self.screen.fill((0, 0, 0))
             self.button.check_hover(pygame.mouse.get_pos())
             self.button.draw(self.screen)
+            self.settings_button.check_hover(pygame.mouse.get_pos())
+            self.settings_button.draw(self.screen)
             self.fps.tick(80)
             pygame.display.update()
             for event in pygame.event.get():
@@ -103,7 +106,19 @@ class Game:
                     sys.exit()
                 if event.type == pygame.USEREVENT and event.button == self.button:
                     self.run()
+                if event.type == pygame.USEREVENT and event.button == self.settings_button:
+                    self.settings()
                 self.button.handle_event(event)
+                self.settings_button.handle_event(event)
+
+    def settings(self):
+        audio_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, 'Аудио', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        video_button = Menu(self.width / 2 - (200 / 2), self.height - 470, 200, 90, 'Видео', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        back_button = Menu(self.width / 2 - (200 / 2), self.height - 370, 200, 90, 'Назад', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+
+        # running = True
+        # while running:
+        #     screen
 
     def run(self):
         pygame.mixer.init()
