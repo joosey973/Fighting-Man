@@ -34,8 +34,7 @@ class Game:
         pygame.time.set_timer(self.leafs_speed, 60)
         self.tilemap = self.generate_map()
         self.activate_sprites()
-
-        self.button = Menu(self.width / 2 - (200 / 2), 300, 200, 90, '', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        self.button = Menu(self.width / 2 - (200 / 2), 300, 200, 90, 'Старт', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
 
     def render_map(self):
         for objects_decor in self.tilemap['offgrid']:
