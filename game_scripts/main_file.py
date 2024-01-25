@@ -114,7 +114,16 @@ class Game:
         pygame.mouse.set_visible(False)
         is_running = True
         camera = Camera(self.screen)
+        count = 0
+        coof = 100
+        camera.update(self.hero, coof)
+        for sprite in self.all_sprites:
+            camera.apply(sprite)
         while is_running:
+            if count < 30:
+                count += 1
+            else:
+                coof = 2
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -128,7 +137,7 @@ class Game:
                                                     (self.width, self.height)), (0, 0))
             [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
                        self.all_sprites) for _ in range(self.start_len_of_particles - len(self.particles))]
-            camera.update(self.hero)
+            camera.update(self.hero, coof)
             for sprite in self.all_sprites:
                 camera.apply(sprite)
             self.update_sprites()

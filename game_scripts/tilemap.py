@@ -38,3 +38,4 @@ class Tilemap(pygame.sprite.Sprite):
                 self.rect = self.image.get_rect()
                 self.rect.x, self.rect.y = pos[0] / 16 * \
                     (size_tile[0] * increase / a), pos[1] / 16 * (size_tile[1] * increase / b)
+
