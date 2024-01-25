@@ -74,7 +74,6 @@ class Game:
                  self.vertical_borders, self.horizontal_borders, self.all_sprites)
         [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
                    self.all_sprites) for _ in range(self.start_len_of_particles)]
-        Enemies(self.enemies_sprite_group, self.all_sprites)
         self.render_map()
 
     def update_sprites(self):
@@ -89,8 +88,6 @@ class Game:
 
         self.hero_sprite.update()  # Апдейт главного героя
         self.hero_sprite.draw(self.screen)
-
-        self.enemies_sprite_group.draw(self.screen)
 
     def menu(self):
         menu = True
