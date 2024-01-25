@@ -19,6 +19,10 @@ class Menu:
         if sound_path:
             self.sound = pygame.mixer.Sound(sound_path)
         self.is_hovered = False
+    
+    def indent(self, x, y=None):
+        self.x = x
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
 
     def draw(self, screen):
         current_image = self.hover if self.is_hovered else self.image
