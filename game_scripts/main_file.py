@@ -21,7 +21,7 @@ import pygame
 
 class Game:
     def __init__(self):
-        self.width, self.height = 1920, 1080
+        self.width, self.height = 1000, 1000 
         self.start_len_of_particles = 25
         self.start_len_of_clouds = (self.width * self.height // 100000) + 5
         self.create_groups()

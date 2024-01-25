@@ -64,6 +64,9 @@ class Hero(pygame.sprite.Sprite):
             if not self.is_jumping and not self.is_dash:
                 self.image = entities_animations("images/entities/player/run/{}.png",
                                                  "run", 7, (14, 18), 3.5, self.is_left)
+            elif self.is_jumping:
+                self.image = entities_animations("images/entities/player/jump/{}.png",
+                                                    "jump", 1, (14, 18), 3.5, self.is_left)
             self.dx += 2
 
         elif key[pygame.K_a]:
@@ -71,8 +74,10 @@ class Hero(pygame.sprite.Sprite):
             if not self.is_jumping and not self.is_dash:
                 self.image = entities_animations("images/entities/player/run/{}.png",
                                                  "run", 7, (14, 18), 3.5, self.is_left)
+            elif self.is_jumping:
+                self.image = entities_animations("images/entities/player/jump/{}.png",
+                                                    "jump", 1, (14, 18), 3.5, self.is_left)
             self.dx -= 2
-
         else:
             if not self.is_jumping and not self.is_dash:
                 if not self.is_jumping:
@@ -95,16 +100,21 @@ class Hero(pygame.sprite.Sprite):
 
     # Функция для отработки движения персонажа
     def do_rotate(self, event):
-
         self.dx, self.dy = 0, 0
+
+        # Физика прыжка
+        self.do_horizontal_and_static_move(pygame.key.get_pressed())
+
         if event is not None and event.type == pygame.KEYDOWN:
-            if (event.key == pygame.K_w or pygame.key.get_pressed()[pygame.K_SPACE]):
+            if (event.key == pygame.K_w or pygame.key.get_pressed()[pygame.K_SPACE]) and self.jumps:
+                self.check_collide()
                 self.is_jumping = True
                 self.gravity = 0.2
-                self.jumps = self.jumps - 1 if self.jumps > 0 else 2
                 self.vel_y = -7 if self.jumps > 0 else self.vel_y
+                self.jumps -= 1
+
                 self.image = entities_animations("images/entities/player/jump/{}.png",
-                                                 "jump", 1, (14, 18), 3.5, self.is_left)
+                                                    "jump", 1, (14, 18), 3.5, self.is_left)
 
             elif event.key == pygame.K_LSHIFT:
                 self.image = pygame.transform.scale(load_image("images/particles/particle/0.png",
@@ -113,6 +123,7 @@ class Hero(pygame.sprite.Sprite):
                 self.check_collide()
             elif event.key == pygame.K_LCTRL:
                 self.is_dash = True
+
         elif event is not None and event.type == pygame.KEYUP:
             if event.key == pygame.K_LCTRL:
                 self.rect.size = self.old_rect
@@ -124,14 +135,13 @@ class Hero(pygame.sprite.Sprite):
                 self.slide_count = 0
 
         # Физика и анимация движения по горизонтали и статического положения
+        self.check_collide()
         self.vel_y += self.gravity
         if self.vel_y > 7:
             self.vel_y = 7
             self.is_jumping = False
         self.dy += self.vel_y
 
-        # Физика прыжка
-        self.do_horizontal_and_static_move(pygame.key.get_pressed())
 
         # Физика дэша
         if self.is_dash and not self.is_jumping:
@@ -159,19 +169,22 @@ class Hero(pygame.sprite.Sprite):
                     self.rect.bottom = tile.rect.top
                     self.dy = 0
                     self.vel_y = 0
+                    self.jumps = 2
                     self.is_jumping = False
-            elif tile.rect.colliderect(self.rect.x + self.dx * coof + value if self.is_left else self.rect.x + self.dx * coof, self.rect.y, self.rect.width, self.rect.height):
+            if tile.rect.colliderect(self.rect.x + self.dx * coof + value if self.is_left else self.rect.x + self.dx * coof, self.rect.y, self.rect.width, self.rect.height):
                 self.rect.size = self.old_rect
+                key = pygame.key.get_pressed()
                 self.dx = 0
                 self.is_dash = False
                 self.is_slide = False
-                if not self.is_jumping:
-                    if self.is_left:
-                        self.image = pygame.transform.scale(load_image("images/entities/player/wall_slide/1.png", -1, self.is_left),
-                                            (self.hero_sizes[0] * 3.5, self.hero_sizes[1] * 3.5))
-                    else:
-                        self.image = pygame.transform.scale(load_image("images/entities/player/wall_slide/0.png", -1),
-                                            (self.hero_sizes[0] * 3.5, self.hero_sizes[1] * 3.5))
+                self.jumps = 2
+                self.is_jumping = False
+                if self.is_left:
+                    self.image = pygame.transform.scale(load_image("images/entities/player/wall_slide/1.png", -1, self.is_left),
+                                        (self.hero_sizes[0] * 3.5, self.hero_sizes[1] * 3.5))
+                else:
+                    self.image = pygame.transform.scale(load_image("images/entities/player/wall_slide/0.png", -1),
+                                        (self.hero_sizes[0] * 3.5, self.hero_sizes[1] * 3.5))
 
             if tile.rect.colliderect(self.rect):
                 if self.rect.right < tile.rect.centerx:
@@ -182,6 +195,7 @@ class Hero(pygame.sprite.Sprite):
                     self.rect.top = tile.rect.bottom
                 else:
                     self.rect.bottom = tile.rect.top
+                    self.jumps = 2
                     self.dy = 0
                     self.vel_y = 0
                     self.is_jumping = False
