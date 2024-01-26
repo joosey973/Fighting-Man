@@ -267,7 +267,7 @@ class Hero(pygame.sprite.Sprite):
 
 
 class Enemies(pygame.sprite.Sprite):
-    def __init__(self, screen, enemies_sprite_group, all_sprite_group, tile_sprite_group, pos):
+    def __init__(self, screen, enemies_sprite_group, all_sprite_group, tile_sprite_group, pos, check_coords):
         super().__init__(enemies_sprite_group, all_sprite_group)
         self.tile_sprite_group = tile_sprite_group
         self.screen = screen
@@ -277,6 +277,7 @@ class Enemies(pygame.sprite.Sprite):
                                 15, (14, 18), 3.5, self.is_left).get_image()
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = pos
+        self.check_coords = check_coords
         # self.rect.width //= 2
         # self.rect.height //= 1.25
 

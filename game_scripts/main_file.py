@@ -37,12 +37,14 @@ class Game:
         self.tilemap = self.generate_map()
         self.activate_sprites()
         self.check_coord([6, 15])
-    
+
     def check_coord(self, pos):
         for objects in self.tilemap["tilemap"]:
             value_object = self.tilemap["tilemap"][objects]
             if value_object['pos'] == pos:
-                print('pizda')
+                return True
+            else:
+                return False
 
     def sound(self, volume=0.1):
         pygame.mixer.init()
