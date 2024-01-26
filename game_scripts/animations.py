@@ -112,7 +112,7 @@ def dash_animation(path, type_of_ev, count_of_files, size, mul_num):
     global index_of_slide, index_of_slide_pic
     image = pygame.transform.scale(load_image(path.format(index_of_slide_pic), -1),
                                    (size[0] * mul_num, size[1] * mul_num))
-    if index_of_slide == 6:
+    if index_of_slide == 10:
         index_of_slide_pic += 1
         index_of_slide = 0
     if index_of_slide_pic == count_of_files:
