@@ -220,7 +220,7 @@ class Game:
             for btn in [video_mode_1_button, video_mode_2_button, video_mode_3_button, back_button]:
                 btn.check_hover(pygame.mouse.get_pos())
                 btn.draw(self.screen)
-            
+
             pygame.display.update()
 
     def video_mode_update(self, width, height, fullsc=0):
@@ -261,7 +261,6 @@ class Game:
                     if event.key == pygame.K_ESCAPE:
                         self.menu()
                         is_running = False
-                self.hero.update(event)
                 self.hero.update(self.enemies_sprite_group, event=event)
 
             self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
