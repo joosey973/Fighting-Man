@@ -99,7 +99,6 @@ class Hero(pygame.sprite.Sprite):
         if not self.is_jumping:
             self.image = entities_animations("images/entities/player/slide/{}.png", "slide",
                                              1, (14, 18), 3, self.is_left)
-
         self.change_rect()
         self.rect.y -= 1
         self.check_collide(coof=2)
@@ -159,9 +158,10 @@ class Hero(pygame.sprite.Sprite):
                 sound_dash.play()
             elif event.key == pygame.K_LCTRL:
                 self.is_dash = True
-                sound_slide = pygame.mixer.Sound('data/sfx/slide.mp3')
-                sound_slide.set_volume(0.2)
-                sound_slide.play()
+                if not self.is_jumping:
+                    sound_slide = pygame.mixer.Sound('data/sfx/slide.mp3')
+                    sound_slide.set_volume(0.2)
+                    sound_slide.play()
             elif event is not None and event.type == pygame.KEYUP:
                 if event.key == pygame.K_LCTRL:
                     self.rect.size = self.old_rect
@@ -228,7 +228,7 @@ class Hero(pygame.sprite.Sprite):
         self.rect.x, self.rect.y = pos
 
     def player_rotate(self, event=None):
-        '''Функция, отвечающаяя за перемещение игровка по экрану'''
+        '''Функция, отвечающаяя за перемещение игроков по экрану'''
         self.kill_enemies()
 
         self.dx, self.dy = 0, 0
@@ -269,7 +269,7 @@ class Hero(pygame.sprite.Sprite):
 
 
 class Enemies(pygame.sprite.Sprite):
-    def __init__(self, screen, enemies_sprite_group, all_sprite_group, tile_sprite_group, pos):
+    def __init__(self, screen, enemies_sprite_group, all_sprite_group, tile_sprite_group, pos, check_coords):
         super().__init__(enemies_sprite_group, all_sprite_group)
         self.tile_sprite_group = tile_sprite_group
         self.screen = screen
@@ -284,6 +284,9 @@ class Enemies(pygame.sprite.Sprite):
         self.gravity = 0.2
         self.dy, self.dx = 0, 1
         self.rect.width //= 1.4
+        self.check_coords = check_coords
+        # self.rect.width //= 2
+        # self.rect.height //= 1.25
 
     def check_collison(self):
         for tile in self.tile_sprite_group:
