@@ -122,7 +122,7 @@ def dash_animation(path, type_of_ev, count_of_files, size, mul_num):
 
 
 class EnemyDeath:
-    def __init__(self, path, count_of_files, size, mul_num, enemy_sprite, is_kill=False, is_reversed=False):
+    def __init__(self, path, count_of_files, size, mul_num, animation_time=6, is_kill=False, is_reversed=False):
         self.path = path
         self.count_of_files = count_of_files
         self.index_of_enemy_pic = 0
@@ -130,16 +130,16 @@ class EnemyDeath:
         self.is_reversed = is_reversed
         self.size = size
         self.mul_num = mul_num
-        self.enemy_sprite = enemy_sprite
         self.is_kill = is_kill
-        self.image = pygame.transform.scale(load_image(self.path.format(index_of_enemy_pic), -1, self.is_reversed),
+        self.animation_time = animation_time
+        self.image = pygame.transform.scale(load_image(self.path.format(self.index_of_enemy_pic), -1, self.is_reversed),
                                             (self.size[0] * self.mul_num, self.size[1] * self.mul_num))
 
     def get_image(self):
         return self.image
 
     def update_animation(self):
-        if self.index_of_enemy == 6:
+        if self.index_of_enemy == self.animation_time:
             self.index_of_enemy_pic += 1
             self.index_of_enemy = 0
         if self.index_of_enemy_pic == self.count_of_files:

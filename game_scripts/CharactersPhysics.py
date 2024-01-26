@@ -55,6 +55,7 @@ class Hero(pygame.sprite.Sprite):
             self.image = dash_animation("images/particles/particle/{}.png", "slide", 3, (12, 12), 3.5)
             self.enemy_collide()
             self.change_rect()
+            self.rect.y -= 1
             self.check_collide(coof=3)
             self.rect.x = self.rect.x + self.dx * 3 if not self.is_left else self.rect.x + self.dx * 3
             self.slide_count += 1
@@ -100,6 +101,7 @@ class Hero(pygame.sprite.Sprite):
                                              1, (14, 18), 3, self.is_left)
 
         self.change_rect()
+        self.rect.y -= 1
         self.check_collide(coof=2)
         self.rect.x = self.rect.x + self.dx * 2 if not self.is_left else self.rect.x + self.dx * 2
         self.dash_count += 1
@@ -120,7 +122,7 @@ class Hero(pygame.sprite.Sprite):
         for enemy in self.enemy_lst:
             if enemy not in self.new_enemy_dict.keys():
                 self.new_enemy_dict[enemy] = EnemyDeath("images/entities/enemy/death/{}.png",
-                                                        20, (14, 18), 3.5, enemy, self.is_left)
+                                                        20, (14, 18), 3.5)
             self.enemy_lst.remove(enemy)
         for enemy, animation in self.new_enemy_dict.copy().items():
             enemy.image = animation.get_image()
@@ -143,7 +145,6 @@ class Hero(pygame.sprite.Sprite):
                 sound_jump = pygame.mixer.Sound('data/sfx/jump.wav')
                 sound_jump.set_volume(0.3)
                 sound_jump.play()
-
 
             elif event.key == pygame.K_LSHIFT:
                 self.is_over = True
@@ -172,7 +173,6 @@ class Hero(pygame.sprite.Sprite):
                     self.slide_count = 0
                     if self.is_over:
                         self.kill_and_create_particles_sprites()
-
 
     def enemy_collide(self):
         for enemy in self.enemy_sprite:
@@ -232,7 +232,7 @@ class Hero(pygame.sprite.Sprite):
         self.kill_enemies()
 
         self.dx, self.dy = 0, 0
-
+        print(self.rect.y)
         self.do_horizontal_and_static_move(pygame.key.get_pressed())
 
         self.keys_down_up_move(event=event)
@@ -279,13 +279,24 @@ class Enemies(pygame.sprite.Sprite):
                                 15, (14, 18), 3.5, self.is_left).get_image()
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = pos
-        # self.rect.width //= 2
-        # self.rect.height //= 1.25
-
-        self.count = 0
+        self.static = EnemyDeath("images/entities/enemy/idle/{}.png", 16, (14, 18), 3.5, 10)
+        self.vel_y = 40
+        self.gravity = 0.2
+        self.dy, self.dx = 0, 1
+        self.rect.width //= 1.4
 
     def check_collison(self):
         for tile in self.tile_sprite_group:
+            if tile.rect.colliderect(self.rect.x, self.rect.y + self.dy, self.rect.width, self.rect.height):
+                if self.rect.top > tile.rect.centery:
+                    self.rect.top = tile.rect.bottom
+                else:
+                    self.rect.bottom = tile.rect.top - 1
+                    self.dy = 0
+                    self.vel_y = 0
+            if tile.rect.colliderect(self.rect.x + self.dx, self.rect.y, self.rect.width, self.rect.height):
+                self.dx = -self.dx
+
             if tile.rect.colliderect(self.rect):
                 if self.rect.right < tile.rect.centerx:
                     self.rect.right = tile.rect.left
@@ -295,10 +306,23 @@ class Enemies(pygame.sprite.Sprite):
                     self.rect.top = tile.rect.bottom
                 else:
                     self.rect.bottom = tile.rect.top
+                    self.dy = 0
+                    self.vel_y = 0
 
     def do_enemy_rotate(self):
-
+        # self.vel_y = 40
+        self.dy = 0
         self.check_collison()
+        self.vel_y += self.gravity
+        if self.vel_y > 7:
+            self.vel_y = 7
+        self.dy += self.vel_y
+        self.image = self.static.get_image()
+        self.static.update_animation()
+
+        self.rect.y += self.dy
+        self.rect.x += self.dx
 
     def update(self):
+        pygame.draw.rect(self.screen, (255, 255, 255), self.rect, 2)
         self.do_enemy_rotate()

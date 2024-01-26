@@ -21,7 +21,7 @@ import pygame
 
 class Game:
     def __init__(self):
-        self.width, self.height = 1920, 1080
+        self.width, self.height = 1000, 1000
         self.start_len_of_particles = 25
         self.start_len_of_clouds = (self.width * self.height // 100000) + 5
         self.create_groups()
@@ -41,7 +41,7 @@ class Game:
     def render_map(self):
         for objects_decor in self.tilemap['offgrid']:
             coord = "offgrid"
-            tile = Tilemap(coord, objects_decor['pos'], objects_decor['type'], objects_decor['variant'],
+            tile = Tilemap(self.screen, coord, objects_decor['pos'], objects_decor['type'], objects_decor['variant'],
                            self.tilemap_sprites, self.other_sprite_group, self.all_sprites)
             if objects_decor['type'] == "player":
                 self.hero = Hero(self.screen, self.hero_sprite, self.all_sprites, self.tilemap_sprites, tile.get_pos())
@@ -55,7 +55,7 @@ class Game:
         for objects in self.tilemap["tilemap"]:
             value_object = self.tilemap['tilemap'][objects]
             coord = 'tilemap'
-            Tilemap(coord, value_object['pos'], value_object['type'], value_object["variant"], self.tilemap_sprites,
+            Tilemap(self.screen, coord, value_object['pos'], value_object['type'], value_object["variant"], self.tilemap_sprites,
                     self.other_sprite_group, self.all_sprites)
 
     def generate_map(self):
