@@ -156,9 +156,10 @@ class Hero(pygame.sprite.Sprite):
                 sound_dash.play()
             elif event.key == pygame.K_LCTRL:
                 self.is_dash = True
-                sound_slide = pygame.mixer.Sound('data/sfx/slide.mp3')
-                sound_slide.set_volume(0.2)
-                sound_slide.play()
+                if not self.is_jumping:
+                    sound_slide = pygame.mixer.Sound('data/sfx/slide.mp3')
+                    sound_slide.set_volume(0.2)
+                    sound_slide.play()
             elif event is not None and event.type == pygame.KEYUP:
                 if event.key == pygame.K_LCTRL:
                     self.rect.size = self.old_rect

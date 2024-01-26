@@ -36,8 +36,13 @@ class Game:
         pygame.time.set_timer(self.leafs_speed, 60)
         self.tilemap = self.generate_map()
         self.activate_sprites()
-
-        
+        self.check_coord([6, 15])
+    
+    def check_coord(self, pos):
+        for objects in self.tilemap["tilemap"]:
+            value_object = self.tilemap["tilemap"][objects]
+            if value_object['pos'] == pos:
+                print('pizda')
 
     def sound(self, volume=0.1):
         pygame.mixer.init()
@@ -55,7 +60,7 @@ class Game:
                 tile.kill()
                 continue
             if objects_decor['type'] == "enemy":
-                Enemies(self.screen, self.enemies_sprite_group, self.all_sprites, self.tilemap_sprites, tile.get_pos())
+                Enemies(self.screen, self.enemies_sprite_group, self.all_sprites, self.tilemap_sprites, tile.get_pos(), self.check_coord)
                 tile.kill()
                 continue
 
