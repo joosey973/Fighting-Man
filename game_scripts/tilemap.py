@@ -20,7 +20,6 @@ class Tilemap(pygame.sprite.Sprite):
             self.rect = self.image.get_rect()
             self.rect.x, self.rect.y = pos[0] * (size_tile[0] * increase), pos[1] * (size_tile[1] * increase)
         if calculation_of_coordinates == 'offgrid':
-            print(type_of_tile)
             increase = 2.5
             if type_of_tile == 'decor':
                 size_tile = [16, 16]
@@ -63,3 +62,5 @@ class Tilemap(pygame.sprite.Sprite):
                 self.rect.x, self.rect.y = self.rect.x, self.rect.y = pos[0] / 16 * \
                     (size_tile[0] * increase / a), pos[1] / 16 * (size_tile[1] * increase / b)
 
+    def get_pos(self):
+        return (self.rect.x, self.rect.y)

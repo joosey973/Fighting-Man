@@ -26,7 +26,8 @@ class Game:
         self.start_len_of_clouds = (self.width * self.height // 100000) + 5
         self.create_groups()
         self.screen = pygame.display.set_mode((self.width, self.height))
-        self.hero = Hero(self.screen, self.hero_sprite, self.all_sprites, self.tilemap_sprites)
+        self.hero = None
+        self.enemy = None
         self.fps = pygame.time.Clock()
         self.clouds_speed = pygame.USEREVENT + 1
         pygame.time.set_timer(self.clouds_speed, 100)
@@ -34,13 +35,23 @@ class Game:
         pygame.time.set_timer(self.leafs_speed, 60)
         self.tilemap = self.generate_map()
         self.activate_sprites()
-        self.button = Menu(self.width / 2 - (200 / 2), 300, 200, 90, 'Старт', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        self.button = Menu(self.width / 2 - (200 / 2), 300, 200, 90, 'Старт',
+                           'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
 
     def render_map(self):
         for objects_decor in self.tilemap['offgrid']:
             coord = "offgrid"
-            Tilemap(coord, objects_decor['pos'], objects_decor['type'], objects_decor['variant'], self.tilemap_sprites,
-                    self.other_sprite_group, self.all_sprites)
+            tile = Tilemap(coord, objects_decor['pos'], objects_decor['type'], objects_decor['variant'],
+                           self.tilemap_sprites, self.other_sprite_group, self.all_sprites)
+            if objects_decor['type'] == "player":
+                self.hero = Hero(self.screen, self.hero_sprite, self.all_sprites, self.tilemap_sprites, tile.get_pos())
+                tile.kill()
+                continue
+            if objects_decor['type'] == "enemy":
+                Enemies(self.screen, self.enemies_sprite_group, self.all_sprites, self.tilemap_sprites, tile.get_pos())
+                tile.kill()
+                continue
+
         for objects in self.tilemap["tilemap"]:
             value_object = self.tilemap['tilemap'][objects]
             coord = 'tilemap'
@@ -86,8 +97,11 @@ class Game:
         self.other_sprite_group.draw(self.screen)
         self.tilemap_sprites.draw(self.screen)
 
-        self.hero_sprite.update()  # Апдейт главного героя
+        self.hero_sprite.update(self.enemies_sprite_group)  # Апдейт главного героя
         self.hero_sprite.draw(self.screen)
+
+        self.enemies_sprite_group.draw(self.screen)
+        self.enemies_sprite_group.update()
 
     def menu(self):
         menu = True
@@ -142,7 +156,7 @@ class Game:
                     self.clouds_sprites.update(True)
                 if event.type == self.leafs_speed:
                     self.particles.update(True)
-                self.hero.update(event)
+                self.hero.update(self.enemies_sprite_group, event=event)
             self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
                                                     (self.width, self.height)), (0, 0))
             [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,
