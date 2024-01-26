@@ -37,9 +37,7 @@ class Game:
         self.tilemap = self.generate_map()
         self.activate_sprites()
 
-        self.start_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, 'Старт', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
-        self.settings_button = Menu(self.width / 2 - (200 / 2), self.height - 470, 200, 90, 'Настройки', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
-        self.exit_button = Menu(self.width / 2 - (200 / 2), self.height - 370, 200, 90, 'Выйти', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        
 
     def sound(self, volume=0.1):
         pygame.mixer.init()
@@ -113,6 +111,9 @@ class Game:
         self.enemies_sprite_group.update()
 
     def menu(self):
+        self.start_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, 'Старт', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        self.settings_button = Menu(self.width / 2 - (200 / 2), self.height - 470, 200, 90, 'Настройки', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        self.exit_button = Menu(self.width / 2 - (200 / 2), self.height - 370, 200, 90, 'Выйти', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
         pygame.mouse.set_visible(True)
         menu = True
         [Clouds(self.screen, self.clouds_sprites, self.all_sprites) for _ in range(self.start_len_of_clouds)]
@@ -128,15 +129,12 @@ class Game:
             self.exit_button.draw(self.screen)
             self.fps.tick(80)
             pygame.display.update()
-
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-
                 if event.type == pygame.USEREVENT and event.button == self.start_button:
-
+                    menu = False
                     self.run()
                 if event.type == pygame.USEREVENT and event.button == self.settings_button:
                     menu = False

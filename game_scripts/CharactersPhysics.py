@@ -227,7 +227,7 @@ class Hero(pygame.sprite.Sprite):
         self.rect.x, self.rect.y = pos
 
     def player_rotate(self, event=None):
-        '''Функция, отвечающаяя за перемещение игровка по экрану'''
+        '''Функция, отвечающаяя за перемещение игроков по экрану'''
         self.kill_enemies()
 
         self.dx, self.dy = 0, 0
