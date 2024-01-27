@@ -1,3 +1,5 @@
+from image_loader import load_image
+
 import pygame
 
 
@@ -10,15 +12,21 @@ class Menu:
         self.width = width
         self.height = height
         self.text = text
-        self.image = pygame.transform.scale(pygame.image.load(image_path), (width, height))
+        self.image = pygame.transform.scale(pygame.image.load(image_path).convert(), (width, height))
+        self.image.set_colorkey((255, 255, 255))
         self.hover = self.image
         if hover_image_path:
-            self.hover = pygame.transform.scale(pygame.image.load(hover_image_path), (width, height))
+            self.hover = pygame.transform.scale(pygame.image.load(hover_image_path).convert(), (width, height))
+            self.hover.set_colorkey((255, 255, 255))
         self.rect = self.image.get_rect(topleft=(x, y))
         self.sound = None
         if sound_path:
             self.sound = pygame.mixer.Sound(sound_path)
         self.is_hovered = False
+
+    def indent(self, x, y=None):
+        self.x = x
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
 
     def draw(self, screen):
         current_image = self.hover if self.is_hovered else self.image
@@ -28,7 +36,7 @@ class Menu:
             text_surface = font.render(self.text, True, (255, 255, 255))
             text_rect = text_surface.get_rect(center=self.rect.center)
             screen.blit(text_surface, text_rect)
-    
+
     def check_hover(self, mouse_pos):
         self.is_hovered = self.rect.collidepoint(mouse_pos)
 

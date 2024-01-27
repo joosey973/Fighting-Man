@@ -20,19 +20,21 @@ index_of_hero_for_fire_ball, index_of_hero_for_ball_pic = 0, 0
 
 index_of_slide, index_of_slide_pic = 0, 0
 
+index_of_enemy, index_of_enemy_pic, type_of_enemy_move = 0, 0, None
+
 
 def enemy_death(path, count_of_files, size, mul_num, is_reversed=False):
     global index_of_enemy_death, index_of_enemy_death_pic
     image = pygame.transform.scale(load_image(path.format(index_of_enemy_death_pic), -1, is_reversed),
                                    (size[0] * mul_num, size[1] * mul_num))
-    if index_of_enemy_death == 1:
+    if index_of_enemy_death == 10:
         index_of_enemy_death_pic += 1
         index_of_enemy_death = 0
     if index_of_enemy_death_pic == count_of_files:
         index_of_enemy_death_pic = 0
 
     index_of_enemy_death += 1
-    return image
+    return image, index_of_enemy_death_pic
 
 
 def hero_death(path, count_of_files, size, mul_num, is_reversed=False):
@@ -110,13 +112,40 @@ def dash_animation(path, type_of_ev, count_of_files, size, mul_num):
     global index_of_slide, index_of_slide_pic
     image = pygame.transform.scale(load_image(path.format(index_of_slide_pic), -1),
                                    (size[0] * mul_num, size[1] * mul_num))
-    if index_of_slide == 6:
+    if index_of_slide == 10:
         index_of_slide_pic += 1
         index_of_slide = 0
     if index_of_slide_pic == count_of_files:
         index_of_slide_pic = 0
     index_of_slide += 1
     return image
+
+
+class EnemyDeath:
+    def __init__(self, path, count_of_files, size, mul_num, animation_time=6, is_reversed=False):
+        self.path = path
+        self.count_of_files = count_of_files
+        self.index_of_enemy_pic = 0
+        self.index_of_enemy = 0
+        self.is_reversed = is_reversed
+        self.size = size
+        self.mul_num = mul_num
+        self.animation_time = animation_time
+        self.image = pygame.transform.scale(load_image(self.path.format(self.index_of_enemy_pic), -1, self.is_reversed),
+                                            (self.size[0] * self.mul_num, self.size[1] * self.mul_num))
+
+    def get_image(self):
+        return self.image
+
+    def update_animation(self,is_reversed=False):
+        if self.index_of_enemy == self.animation_time:
+            self.index_of_enemy_pic += 1
+            self.index_of_enemy = 0
+        if self.index_of_enemy_pic == self.count_of_files:
+            self.index_of_enemy_pic = 0
+        self.image = pygame.transform.scale(load_image(self.path.format(self.index_of_enemy_pic), -1, is_reversed),
+                                            (self.size[0] * self.mul_num, self.size[1] * self.mul_num))
+        self.index_of_enemy += 1
 
 
 class Camera:
@@ -126,9 +155,9 @@ class Camera:
         self.screen = screen
 
     def apply(self, obj):
-        obj.rect.x += self.dx // 50
-        obj.rect.y += self.dy // 50
+        obj.rect.x += self.dx // 60
+        obj.rect.y += self.dy // 60
 
-    def update(self, target, coof=2):
-        self.dx = -(target.rect.x + target.rect.w // coof - self.screen.get_width() // coof)
-        self.dy = -(target.rect.y + target.rect.h // coof - self.screen.get_height() // coof)
+    def update(self, target):
+        self.dx = -(target.rect.x + target.rect.w // 2 - self.screen.get_width() // 2)
+        self.dy = -(target.rect.y + target.rect.h // 2 - self.screen.get_height() // 2)
