@@ -145,7 +145,7 @@ class Hero(pygame.sprite.Sprite):
                 self.image = entities_animations("images/entities/player/jump/{}.png",
                                                  "jump", 1, (14, 18), 3.5, self.is_left)
                 sound_jump = pygame.mixer.Sound('data/sfx/jump.wav')
-                sound_jump.set_volume(0.3)
+                sound_jump.set_volume(0.1)
                 sound_jump.play()
 
             elif event.key == pygame.K_LSHIFT:

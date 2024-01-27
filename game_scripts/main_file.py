@@ -52,7 +52,7 @@ class Game:
             else:
                 return False
 
-    def sound(self, volume=0.1):
+    def sound(self, volume=0.0):
         pygame.mixer.init()
         pygame.mixer.music.load('data/music_minecraft.mp3')
         pygame.mixer.music.play(-1)
