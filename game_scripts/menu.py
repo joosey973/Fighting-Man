@@ -1,3 +1,5 @@
+from image_loader import load_image
+
 import pygame
 
 
@@ -10,10 +12,12 @@ class Menu:
         self.width = width
         self.height = height
         self.text = text
-        self.image = pygame.transform.scale(pygame.image.load(image_path), (width, height))
+        self.image = pygame.transform.scale(pygame.image.load(image_path).convert(), (width, height))
+        self.image.set_colorkey((255, 255, 255))
         self.hover = self.image
         if hover_image_path:
-            self.hover = pygame.transform.scale(pygame.image.load(hover_image_path), (width, height))
+            self.hover = pygame.transform.scale(pygame.image.load(hover_image_path).convert(), (width, height))
+            self.hover.set_colorkey((255, 255, 255))
         self.rect = self.image.get_rect(topleft=(x, y))
         self.sound = None
         if sound_path:

@@ -37,12 +37,14 @@ class Game:
         self.tilemap = self.generate_map()
         self.activate_sprites()
         self.check_coord([6, 15])
+        self.new_mouse = pygame.image.load('data/images/arrow/arrow.png')
     
     def check_coord(self, pos):
-        for objects in self.tilemap["tilemap"]:
-            value_object = self.tilemap["tilemap"][objects]
-            if value_object['pos'] == pos:
-                print('pizda')
+        return 1
+        # for objects in self.tilemap["tilemap"]:
+        #     value_object = self.tilemap["tilemap"][objects]
+        #     if value_object['pos'] == pos:
+        #         print('pizda')
 
     def sound(self, volume=0.1):
         pygame.mixer.init()
@@ -60,7 +62,7 @@ class Game:
                 tile.kill()
                 continue
             if objects_decor['type'] == "enemy":
-                Enemies(self.screen, self.enemies_sprite_group, self.all_sprites, self.tilemap_sprites, tile.get_pos(), self.check_coord)
+                Enemies(self.screen, self.enemies_sprite_group, self.all_sprites, self.tilemap_sprites, tile.get_pos())
                 tile.kill()
                 continue
 
@@ -71,7 +73,7 @@ class Game:
                     self.other_sprite_group, self.all_sprites)
 
     def generate_map(self):
-        with open('levels/level_1.json', 'r', encoding='utf-8') as file:
+        with open('levels/level_4.json', 'r', encoding='utf-8') as file:
             data = json.load(file)
         return data
 
@@ -115,25 +117,26 @@ class Game:
         self.enemies_sprite_group.draw(self.screen)
         self.enemies_sprite_group.update()
 
-    def menu(self):
-        self.start_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, 'Старт', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
-        self.settings_button = Menu(self.width / 2 - (200 / 2), self.height - 470, 200, 90, 'Настройки', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
-        self.exit_button = Menu(self.width / 2 - (200 / 2), self.height - 370, 200, 90, 'Выйти', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
-        pygame.mouse.set_visible(True)
-        menu = True
+    def delete_clouds(self):
+        for cloud in self.clouds_sprites:
+            cloud.kill()
+
+    def draw_clouds(self):
         [Clouds(self.screen, self.clouds_sprites, self.all_sprites) for _ in range(self.start_len_of_clouds)]
+        running = True
+        while running:
+            self.clouds_sprites.draw(self.screen)
+            self.clouds_speed.update(True)
+
+    def menu(self):
+        self.start_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, '', 'data/images/buttons/new_start.png', 'data/images/buttons/new_start_hover.png', 'data/sfx/button.mp3')
+        self.settings_button = Menu(self.width / 2 - (200 / 2), self.height - 470, 200, 90, '', 'data/images/buttons/settings.png', 'data/images/buttons/settings_hover.png', 'data/sfx/button.mp3')
+        self.exit_button = Menu(self.width / 2 - (200 / 2), self.height - 370, 200, 90, '', 'data/images/buttons/exit.png', 'data/images/buttons/exit_hover.png', 'data/sfx/button.mp3')
+        pygame.mouse.set_visible(False)
+        menu = True
         while menu:
             self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
                                                     (self.width, self.height)), (0, 0))
-
-            self.start_button.check_hover(pygame.mouse.get_pos())
-            self.start_button.draw(self.screen)
-            self.settings_button.check_hover(pygame.mouse.get_pos())
-            self.settings_button.draw(self.screen)
-            self.exit_button.check_hover(pygame.mouse.get_pos())
-            self.exit_button.draw(self.screen)
-            self.fps.tick(80)
-            pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -153,11 +156,20 @@ class Game:
                 self.start_button.handle_event(event)
                 self.settings_button.handle_event(event)
                 self.exit_button.handle_event(event)
+                for btn in [self.start_button, self.settings_button, self.exit_button]:
+                    btn.handle_event(event)
+            for btn in [self.start_button, self.settings_button, self.exit_button]:
+                btn.check_hover(pygame.mouse.get_pos())
+                btn.draw(self.screen)
+            pos = pygame.mouse.get_pos()
+            if pygame.mouse.get_focused():
+                self.screen.blit(self.new_mouse, pos)
+            pygame.display.update()
 
     def settings(self):
-        audio_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, 'Аудио', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
-        video_button = Menu(self.width / 2 - (200 / 2), self.height - 470, 200, 90, 'Видео', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
-        back_button = Menu(self.width / 2 - (200 / 2), self.height - 370, 200, 90, 'Назад', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        # audio_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, '', 'data/images/buttons/audio.png', 'data/images/buttons/audio_hover.png', 'data/sfx/button.mp3')
+        video_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, '', 'data/images/buttons/video.png', 'data/images/buttons/video_hover.png', 'data/sfx/button.mp3')
+        back_button = Menu(self.width / 2 - (200 / 2), self.height - 470, 200, 90, '', 'data/images/buttons/back.png', 'data/images/buttons/back_hover.png', 'data/sfx/button.mp3')
         running = True
         while running:
             self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
@@ -167,6 +179,8 @@ class Game:
             text_rect = text_surface.get_rect(center=(self.width / 2, 100))
             self.screen.blit(text_surface, text_rect)
             for event in pygame.event.get():
+                if event.type == self.clouds_speed:
+                    self.clouds_sprites.update(True)
                 if event.type == pygame.QUIT:
                     running = False
                     pygame.quit()
@@ -177,24 +191,24 @@ class Game:
                 if event.type == pygame.USEREVENT and event.button == video_button:
                     self.video_settings()
                     running = False
-                    for btn in [audio_button, video_button, back_button]:
+                    for btn in [video_button, back_button]:
                         btn.indent(self.width / 2 - (200 / 2))
-                if event.type == pygame.USEREVENT and event.button == audio_button:
-                    self.audio_settings()
                     running = False
-                for btn in [audio_button, video_button, back_button]:
+                for btn in [video_button, back_button]:
                     btn.handle_event(event)
-            for btn in [audio_button, video_button, back_button]:
+            for btn in [video_button, back_button]:
                 btn.check_hover(pygame.mouse.get_pos())
                 btn.draw(self.screen)
-
+            pos = pygame.mouse.get_pos()
+            if pygame.mouse.get_focused():
+                self.screen.blit(self.new_mouse, pos)
             pygame.display.update()
 
     def video_settings(self):
-        video_mode_1_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, '800x600', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
-        video_mode_2_button = Menu(self.width / 2 - (200 / 2), self.height - 470, 200, 90, '1280x1024', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
-        video_mode_3_button = Menu(self.width / 2 - (200 / 2), self.height - 370, 200, 90, 'Full HD', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
-        back_button = Menu(self.width / 2 - (200 / 2), self.height - 270, 200, 90, 'Назад', 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        video_mode_1_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, '', 'data/images/buttons/800x600.png', 'data/images/buttons/800x600_hover.png', 'data/sfx/button.mp3')
+        video_mode_2_button = Menu(self.width / 2 - (200 / 2), self.height - 470, 200, 90, '', 'data/images/buttons/1280x1024.png', 'data/images/buttons/1280x1024_hover.png', 'data/sfx/button.mp3')
+        video_mode_3_button = Menu(self.width / 2 - (200 / 2), self.height - 370, 200, 90, '', 'data/images/buttons/full_hd.png', 'data/images/buttons/full_hd_hover.png', 'data/sfx/button.mp3')
+        back_button = Menu(self.width / 2 - (200 / 2), self.height - 270, 200, 90, '', 'data/images/buttons/back.png', 'data/images/buttons/back_hover.png', 'data/sfx/button.mp3')
         running = True
         while running:
             self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
@@ -225,7 +239,9 @@ class Game:
             for btn in [video_mode_1_button, video_mode_2_button, video_mode_3_button, back_button]:
                 btn.check_hover(pygame.mouse.get_pos())
                 btn.draw(self.screen)
-
+            pos = pygame.mouse.get_pos()
+            if pygame.mouse.get_focused():
+                self.screen.blit(self.new_mouse, pos)
             pygame.display.update()
 
     def video_mode_update(self, width, height, fullsc=0):
@@ -233,9 +249,6 @@ class Game:
         self.screen = pygame.display.set_mode((width, height), fullsc)
         self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
                                                     (width, height)), (0, 0))
-
-    def audio_settings(self):
-        print('zxc')
 
     def run(self):
         pygame.mouse.set_visible(False)
@@ -261,13 +274,11 @@ class Game:
                     self.clouds_sprites.update(True)
                 if event.type == self.leafs_speed:
                     self.particles.update(True)
-
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.menu()
                         is_running = False
                 self.hero.update(self.enemies_sprite_group, event=event)
-
             self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
                                                     (self.width, self.height)), (0, 0))
             [Particles(self.screen, "leaf", self.particles, self.horizontal_borders, self.vertical_borders,

@@ -295,7 +295,6 @@ class Enemies(pygame.sprite.Sprite):
                     self.rect.bottom = tile.rect.top
 
     def do_enemy_rotate(self):
-
         self.check_collison()
 
     def update(self):
