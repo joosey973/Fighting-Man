@@ -211,7 +211,8 @@ class Hero(pygame.sprite.Sprite):
                 self.jumps = 2
                 self.is_jumping = False
                 if self.is_left:
-                    self.image = pygame.transform.scale(load_image("images/entities/player/wall_slide/1.png", -1, self.is_left),
+                    self.image = pygame.transform.scale(load_image("images/entities/player/wall_slide/1.png", -1,
+                                                                   self.is_left),
                                                         (self.hero_sizes[0] * 3.5, self.hero_sizes[1] * 3.5))
                 else:
                     self.image = pygame.transform.scale(load_image("images/entities/player/wall_slide/0.png", -1),
@@ -368,7 +369,8 @@ class Enemies(pygame.sprite.Sprite):
                 if self.cooldown == 35:
                     self.list_of_projectiles.append(Projectile(self.projectile_sprite_group, self.all_sprites,
                                                                (self.rect.x + self.rect.width // 2 + 2,
-                                                                self.rect.y + self.rect.height // 2), (hero.rect.centerx, hero.rect.centery), self.screen))
+                                                                self.rect.y + self.rect.height // 2),
+                                                               (hero.rect.centerx, hero.rect.centery), self.screen))
                     self.cooldown = 0
                 else:
                     self.cooldown += 1
@@ -378,7 +380,8 @@ class Enemies(pygame.sprite.Sprite):
             self.gun_offset = -5
         else:
             self.gun_offset = 3
-        self.gun.rect.x, self.gun.rect.y = self.rect.x + self.rect.width // 2 + self.gun_offset, self.rect.y + self.rect.height // 2
+        self.gun.rect.x, self.gun.rect.y = (self.rect.x + self.rect.width // 2 +
+                                            self.gun_offset, self.rect.y + self.rect.height // 2)
 
         self.dy = 0
         self.check_collison()
