@@ -1,6 +1,6 @@
 import sys
 
-from CharactersPhysics import Hero, Enemies
+from CharactersPhysics import Hero, Enemies, Gun
 
 from animations import Camera
 
@@ -36,15 +36,14 @@ class Game:
         pygame.time.set_timer(self.leafs_speed, 60)
         self.tilemap = self.generate_map()
         self.activate_sprites()
-        self.check_coord([6, 15])
-        self.new_mouse = pygame.image.load('data/images/arrow/arrow.png')
-    
+
     def check_coord(self, pos):
-        return 1
-        # for objects in self.tilemap["tilemap"]:
-        #     value_object = self.tilemap["tilemap"][objects]
-        #     if value_object['pos'] == pos:
-        #         print('pizda')
+        for objects in self.tilemap["tilemap"]:
+            value_object = self.tilemap["tilemap"][objects]
+            if value_object['pos'] == pos:
+                return True
+            else:
+                return False
 
     def sound(self, volume=0.1):
         pygame.mixer.init()
@@ -55,22 +54,23 @@ class Game:
     def render_map(self):
         for objects_decor in self.tilemap['offgrid']:
             coord = "offgrid"
-            tile = Tilemap(coord, objects_decor['pos'], objects_decor['type'], objects_decor['variant'],
+            tile = Tilemap(self.screen, coord, objects_decor['pos'], objects_decor['type'], objects_decor['variant'],
                            self.tilemap_sprites, self.other_sprite_group, self.all_sprites)
             if objects_decor['type'] == "player":
                 self.hero = Hero(self.screen, self.hero_sprite, self.all_sprites, self.tilemap_sprites, tile.get_pos())
                 tile.kill()
                 continue
             if objects_decor['type'] == "enemy":
-                Enemies(self.screen, self.enemies_sprite_group, self.all_sprites, self.tilemap_sprites, tile.get_pos())
+                Enemies(self.screen, self.enemies_sprite_group, self.all_sprites,
+                        self.tilemap_sprites, tile.get_pos(), self.check_coord,
                 tile.kill()
                 continue
 
         for objects in self.tilemap["tilemap"]:
             value_object = self.tilemap['tilemap'][objects]
             coord = 'tilemap'
-            Tilemap(coord, value_object['pos'], value_object['type'], value_object["variant"], self.tilemap_sprites,
-                    self.other_sprite_group, self.all_sprites)
+            Tilemap(self.screen, coord, value_object['pos'], value_object['type'],
+                    value_object["variant"], self.tilemap_sprites, self.other_sprite_group, self.all_sprites)
 
     def generate_map(self):
         with open('levels/level_4.json', 'r', encoding='utf-8') as file:
@@ -87,6 +87,7 @@ class Game:
         self.tilemap_sprites = pygame.sprite.Group()
         self.other_sprite_group = pygame.sprite.Group()
         self.enemies_sprite_group = pygame.sprite.Group()
+        self.guns_sprite_group = pygame.sprite.Group()
 
     def activate_sprites(self):
         Boarders(5, 5, self.screen.get_width() - 5, 5, self.vertical_borders, self.horizontal_borders,
@@ -115,7 +116,9 @@ class Game:
         self.hero_sprite.draw(self.screen)
 
         self.enemies_sprite_group.draw(self.screen)
-        self.enemies_sprite_group.update()
+        self.enemies_sprite_group.update(self.hero_sprite)
+
+        self.guns_sprite_group.draw(self.screen)
 
     def delete_clouds(self):
         for cloud in self.clouds_sprites:
@@ -129,10 +132,14 @@ class Game:
             self.clouds_speed.update(True)
 
     def menu(self):
-        self.start_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, '', 'data/images/buttons/new_start.png', 'data/images/buttons/new_start_hover.png', 'data/sfx/button.mp3')
-        self.settings_button = Menu(self.width / 2 - (200 / 2), self.height - 470, 200, 90, '', 'data/images/buttons/settings.png', 'data/images/buttons/settings_hover.png', 'data/sfx/button.mp3')
-        self.exit_button = Menu(self.width / 2 - (200 / 2), self.height - 370, 200, 90, '', 'data/images/buttons/exit.png', 'data/images/buttons/exit_hover.png', 'data/sfx/button.mp3')
-        pygame.mouse.set_visible(False)
+        self.start_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, 'Старт',
+                                 'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        self.settings_button = Menu(self.width / 2 - (200 / 2), self.height - 470, 200, 90, 'Настройки',
+                                    'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        self.exit_button = Menu(self.width / 2 - (200 / 2), self.height - 370, 200, 90, 'Выйти',
+                                'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        pygame.mouse.set_visible(True)
+
         menu = True
         while menu:
             self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
@@ -167,9 +174,12 @@ class Game:
             pygame.display.update()
 
     def settings(self):
-        # audio_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, '', 'data/images/buttons/audio.png', 'data/images/buttons/audio_hover.png', 'data/sfx/button.mp3')
-        video_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, '', 'data/images/buttons/video.png', 'data/images/buttons/video_hover.png', 'data/sfx/button.mp3')
-        back_button = Menu(self.width / 2 - (200 / 2), self.height - 470, 200, 90, '', 'data/images/buttons/back.png', 'data/images/buttons/back_hover.png', 'data/sfx/button.mp3')
+        audio_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, 'Аудио',
+                            'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        video_button = Menu(self.width / 2 - (200 / 2), self.height - 470, 200, 90, 'Видео',
+                            'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        back_button = Menu(self.width / 2 - (200 / 2), self.height - 370, 200, 90, 'Назад',
+                           'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
         running = True
         while running:
             self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
@@ -205,10 +215,15 @@ class Game:
             pygame.display.update()
 
     def video_settings(self):
-        video_mode_1_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, '', 'data/images/buttons/800x600.png', 'data/images/buttons/800x600_hover.png', 'data/sfx/button.mp3')
-        video_mode_2_button = Menu(self.width / 2 - (200 / 2), self.height - 470, 200, 90, '', 'data/images/buttons/1280x1024.png', 'data/images/buttons/1280x1024_hover.png', 'data/sfx/button.mp3')
-        video_mode_3_button = Menu(self.width / 2 - (200 / 2), self.height - 370, 200, 90, '', 'data/images/buttons/full_hd.png', 'data/images/buttons/full_hd_hover.png', 'data/sfx/button.mp3')
-        back_button = Menu(self.width / 2 - (200 / 2), self.height - 270, 200, 90, '', 'data/images/buttons/back.png', 'data/images/buttons/back_hover.png', 'data/sfx/button.mp3')
+        video_mode_1_button = Menu(self.width / 2 - (200 / 2), self.height - 570, 200, 90, '800x600',
+                                   'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        video_mode_2_button = Menu(self.width / 2 - (200 / 2), self.height - 470, 200, 90, '1280x1024',
+                                   'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        video_mode_3_button = Menu(self.width / 2 - (200 / 2), self.height - 370, 200, 90, 'Full HD',
+                                   'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+        back_button = Menu(self.width / 2 - (200 / 2), self.height - 270, 200, 90, 'Назад',
+                           'data/images/buttons/start.png', 'data/images/buttons/start_hover.png', 'data/sfx/button.mp3')
+
         running = True
         while running:
             self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
@@ -248,7 +263,7 @@ class Game:
         self.width, self.height = width, height
         self.screen = pygame.display.set_mode((width, height), fullsc)
         self.screen.blit(pygame.transform.scale(load_image("images/background.png"),
-                                                    (width, height)), (0, 0))
+                                                (width, height)), (0, 0))
 
     def run(self):
         pygame.mouse.set_visible(False)

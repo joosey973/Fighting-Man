@@ -4,8 +4,9 @@ import pygame
 
 
 class Tilemap(pygame.sprite.Sprite):
-    def __init__(self, calculation_of_coordinates, pos, type_of_tile, varint_of_tile,
+    def __init__(self, screen, calculation_of_coordinates, pos, type_of_tile, varint_of_tile,
                  sprite_group, other_sprite_group, all_sprites):
+        self.screen = screen
         if type_of_tile in ("grass", "stone"):
             super().__init__(sprite_group, all_sprites)
         else:
