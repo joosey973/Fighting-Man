@@ -23,7 +23,7 @@ class Menu:
         if sound_path:
             self.sound = pygame.mixer.Sound(sound_path)
         self.is_hovered = False
-    
+
     def indent(self, x, y=None):
         self.x = x
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
@@ -36,7 +36,7 @@ class Menu:
             text_surface = font.render(self.text, True, (255, 255, 255))
             text_rect = text_surface.get_rect(center=self.rect.center)
             screen.blit(text_surface, text_rect)
-    
+
     def check_hover(self, mouse_pos):
         self.is_hovered = self.rect.collidepoint(mouse_pos)
 
