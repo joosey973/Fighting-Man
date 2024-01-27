@@ -64,4 +64,4 @@ class Tilemap(pygame.sprite.Sprite):
                     (size_tile[0] * increase / a), pos[1] / 16 * (size_tile[1] * increase / b)
 
     def get_pos(self):
-        return (self.rect.x, self.rect.y)
+        return [self.rect.x, self.rect.y]

@@ -137,13 +137,13 @@ class EnemyDeath:
     def get_image(self):
         return self.image
 
-    def update_animation(self):
+    def update_animation(self,is_reversed=False):
         if self.index_of_enemy == self.animation_time:
             self.index_of_enemy_pic += 1
             self.index_of_enemy = 0
         if self.index_of_enemy_pic == self.count_of_files:
             self.index_of_enemy_pic = 0
-        self.image = pygame.transform.scale(load_image(self.path.format(self.index_of_enemy_pic), -1, self.is_reversed),
+        self.image = pygame.transform.scale(load_image(self.path.format(self.index_of_enemy_pic), -1, is_reversed),
                                             (self.size[0] * self.mul_num, self.size[1] * self.mul_num))
         self.index_of_enemy += 1
 
@@ -155,9 +155,9 @@ class Camera:
         self.screen = screen
 
     def apply(self, obj):
-        obj.rect.x += self.dx // 50
-        obj.rect.y += self.dy // 50
+        obj.rect.x += self.dx // 60
+        obj.rect.y += self.dy // 60
 
-    def update(self, target, coof=2):
-        self.dx = -(target.rect.x + target.rect.w // coof - self.screen.get_width() // coof)
-        self.dy = -(target.rect.y + target.rect.h // coof - self.screen.get_height() // coof)
+    def update(self, target):
+        self.dx = -(target.rect.x + target.rect.w // 2 - self.screen.get_width() // 2)
+        self.dy = -(target.rect.y + target.rect.h // 2 - self.screen.get_height() // 2)

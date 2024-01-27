@@ -182,26 +182,12 @@ class Hero(pygame.sprite.Sprite):
             if enemy.rect.colliderect(self.rect):
                 if enemy not in self.enemy_lst:
                     self.enemy_lst.append(enemy)
-    '''for enemy in self.enemy_lst:
-            if enemy not in self.new_enemy_dict.keys():
-                self.new_enemy_dict[enemy] = EnemyDeath("images/entities/enemy/death/{}.png",
-                                                        20, (14, 18), 3.5)
-            self.enemy_lst.remove(enemy)
-        for enemy, animation in self.new_enemy_dict.copy().items():
-            enemy.image = animation.get_image()
-            animation.update_animation()
-            if animation.index_of_enemy_pic == animation.count_of_files - 1:
-                enemy.gun.kill()
-                enemy.kill()
-                self.new_enemy_dict.pop(enemy)'''
 
     def check_collide(self, coof=1):
         for tile in self.tile_sprites:
             for enemy in self.enemy_sprite:
                 for projectiles in enemy.list_of_projectiles:
                     if projectiles.rect.colliderect(self.rect):
-                        if self.hero_death is None:
-                            self.hero_death = EnemyDeath("images/entities/player/death/{}.png", 27, (14, 18), 3.5, 3, self.is_left)
                         self.is_hero_death = True
                     elif (projectiles.rect.colliderect(tile.rect) or projectiles.rect.left
                           >= self.screen.get_width() or projectiles.rect.right <= 0):
@@ -283,11 +269,6 @@ class Hero(pygame.sprite.Sprite):
             self.particle_sprite_group.draw(self.screen)
 
         self.check_collide()
-        if self.is_hero_death:
-            self.image = self.hero_death.get_image()
-            self.hero_death.update_animation()
-            if self.hero_death.index_of_enemy_pic == self.hero_death.count_of_files - 1:
-                self.kill()
 
         self.rect.x += self.dx
         self.rect.y += self.dy
@@ -303,16 +284,24 @@ class Gun(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(load_image("images/gun.png", (0, 0, 0)), (20, 12))
         self.rect = self.image.get_rect()
 
+    def get_image(self):
+        return self.image
+
+    def update(self, is_left):
+        self.image = pygame.transform.scale(load_image("images/gun.png", (0, 0, 0), is_left), (20, 12))
+
 
 class Projectile(pygame.sprite.Sprite):
-    def __init__(self, projectile_sprite_group, all_spirtes, pos, hero_coordinates):
+    def __init__(self, projectile_sprite_group, all_spirtes, pos, hero_coordinates, screen):
         super().__init__(projectile_sprite_group, all_spirtes)
+        self.screen = screen
         self.image = pygame.transform.scale(load_image("images/projectile.png", (0, 0, 0)), (20, 13))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = pos
-        self.shoot_time = 0  # В дальнейгем поставим n секунд
         self.hero_coordinates = hero_coordinates
         self.dx = 5
+        self.rect.width //= 1.5
+        self.rect.height //= 1.5
         self.find_path()
 
     def find_path(self):
@@ -322,6 +311,8 @@ class Projectile(pygame.sprite.Sprite):
             self.dx = -5
 
     def update(self):
+        if self.rect.x > self.screen.get_width() or self.rect.x < 0:
+            self.kill()
         self.rect = self.rect.move(self.dx, 0)
 
 
@@ -330,6 +321,7 @@ class Enemies(pygame.sprite.Sprite):
         super().__init__(enemies_sprite_group, all_sprite_group)
         self.gun = gun
         self.hero_spite_group = None
+        self.gun_offset = 0
         self.tile_sprite_group = tile_sprite_group
         self.all_sprites = all_sprite_group
         self.list_of_projectiles = []
@@ -347,9 +339,6 @@ class Enemies(pygame.sprite.Sprite):
         self.gravity = 0.2
         self.dy, self.dx = 0, 0
         self.rect.width //= 1.4
-        self.check_coords = check_coords
-        # self.rect.width //= 2
-        # self.rect.height //= 1.25
 
     def check_collison(self):
         for tile in self.tile_sprite_group:
@@ -360,16 +349,8 @@ class Enemies(pygame.sprite.Sprite):
                     self.rect.bottom = tile.rect.top
                     self.dy = 0
                     self.vel_y = 0
-            # if not self.check_coords([self.rect.x + self.dx, self.rect.y + self.dy]):
-            #     self.dx = -self.dx
-            # if tile.rect.colliderect(self.rect.x + self.dx, self.rect.y, self.rect.width, self.rect.height):
-            #     self.dx = -self.dx
 
             if tile.rect.colliderect(self.rect):
-                # if self.rect.right < tile.rect.centerx:
-                #     self.rect.right = tile.rect.left
-                # elif self.rect.left > tile.rect.centerx:
-                #     self.rect.left = tile.rect.right
                 if self.rect.top >= tile.rect.centery:
                     self.rect.top = tile.rect.bottom
                 else:
@@ -379,19 +360,26 @@ class Enemies(pygame.sprite.Sprite):
 
     def detect_hero(self):
         for hero in self.hero_spite_group:
-            if hero.rect.y in range(self.rect.y - 30, self.rect.y + 31):
-                if self.cooldown == 50:
+            if hero.rect.y in range(self.rect.y - 40, self.rect.y + 40):
+                if hero.rect.x - self.rect.x >= 0:
+                    self.is_left = False
+                else:
+                    self.is_left = True
+                if self.cooldown == 35:
                     self.list_of_projectiles.append(Projectile(self.projectile_sprite_group, self.all_sprites,
                                                                (self.rect.x + self.rect.width // 2 + 2,
-                                                                self.rect.y + self.rect.height // 2), (hero.rect.centerx, hero.rect.centery)))
+                                                                self.rect.y + self.rect.height // 2), (hero.rect.centerx, hero.rect.centery), self.screen))
                     self.cooldown = 0
                 else:
                     self.cooldown += 1
 
     def do_enemy_rotate(self):
-        # self.vel_y = 40
-        self.gun_image = load_image("images/gun.png")
-        self.gun.rect.x, self.gun.rect.y = self.rect.x + self.rect.width // 2 + 2, self.rect.y + self.rect.height // 2
+        if self.is_left:
+            self.gun_offset = -5
+        else:
+            self.gun_offset = 3
+        self.gun.rect.x, self.gun.rect.y = self.rect.x + self.rect.width // 2 + self.gun_offset, self.rect.y + self.rect.height // 2
+
         self.dy = 0
         self.check_collison()
         self.vel_y += self.gravity
@@ -399,16 +387,16 @@ class Enemies(pygame.sprite.Sprite):
             self.vel_y = 7
         self.dy += self.vel_y
         self.image = self.static.get_image()
-        self.static.update_animation()
+        self.static.update_animation(self.is_left)
         self.detect_hero()
         self.projectile_sprite_group.draw(self.screen)
         self.projectile_sprite_group.update()
-        # self.projectile_sprite_group.update()
+        self.gun.image = self.gun.get_image()
+        self.gun.update(self.is_left)
 
         self.rect.y += self.dy
         self.rect.x += self.dx
 
     def update(self, hero_spite_group):
         self.hero_spite_group = hero_spite_group
-        pygame.draw.rect(self.screen, (255, 255, 255), self.rect, 2)
         self.do_enemy_rotate()
